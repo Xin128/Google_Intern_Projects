@@ -1,18 +1,206 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
+
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>My Portfolio</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
-  </head>
-  <body>
-    <div id="content">
-      <h1>My Portfolio</h1>
-      <p>This is my portfolio.</p>
-      <p>Click here to get a random message:</p>
-      <button onclick="addRandomGreeting()">Hello</button>
-      <div id="greeting-container"></div>
-    </div>
-  </body>
+	<head>
+		<title>Xin Hao</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header" class="alt">
+						<a href="index.html" class="logo"><strong>Xin Hao</strong> <span>Google STEP & Rice University</span></a>
+						<nav>
+							<a href="#menu">Menu</a>
+						</nav>
+					</header>
+
+				<!-- Menu -->
+					<nav id="menu">
+						<ul class="links">
+							<li><a href="index.html">Home</a></li>
+							<li><a href="ehr.html">EHR_Pytorch</a></li>
+							<li><a href="sting.html">STING</a></li>
+							<li><a href="fintech_helper.html">Fintech Helper</a></li>
+						</ul>
+					</nav>
+
+				<!-- Banner -->
+					<section id="banner" class="major">
+						<div class="inner">
+							<header class="major">
+								<h3>Hey, I am </h3>
+                                <h1>Xin Hao </h1>
+							</header>
+                             <span class="image main">
+                                 <img src="images/header_background_sea.jpg" alt="" />
+                             </span>
+							<div class="content">
+                                <p> Code A Hello Word
+                                I am currently working for UTHealth as a research assistant on modeling, interpretation and visualization of Electronic Health Record using various RNN models for better clinical care.
+                                I am really interested in machine learning, statistics modeling, and algorithm design, especially deep learning. </p>
+								<ul class="actions">
+									<li><a href="#one" class="button next scrolly">What I have done</a></li>
+								</ul>
+							</div>
+						</div>
+					</section>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- One -->
+							<section id="one" class="tiles">
+                                <article>
+                                    <span class="image">
+                                        <img src="images/gallery-2.jpg" alt="" />
+                                    </span>
+                                    <header class="major">
+                                        <h3><a href="fintech_helper.html" class="link">Fintech Helper</a></h3>
+                                        <p>Programmer, HackRice</p>
+                                    </header>
+                                </article>
+                                <article>
+									<span class="image">
+										<img src="images/009.jpg" alt="" />
+									</span>
+									<header class="major">
+										<h3><a href="ehr.html" class="link">EHR Modeling and Interpretation</a></h3>
+										<p>Research Assistant, UTHealth</p>
+									</header>
+								</article>
+								
+								<article>
+									<span class="image">
+										<img src="images/010.jpg" alt="" />
+									</span>
+									<header class="major">
+										<h3><a href="https://www.hackster.io/154078/sting-greenhouse-light-management-system-de257d" class="link">STING</a></h3>
+										<p>Programmer, Rice University ELEC 220</p>
+									</header>
+								</article>
+								<article>
+									<span class="image">
+										<img src="images/pic04.jpg" alt="" />
+									</span>
+									<header class="major">
+                                        <h3><a href="http://raconteurs.sxl.cn" class="link">APP Design: Ivery</a></h3>
+										<p>Data Analyst and Web Development, China Thinks Big</p>
+									</header>
+								</article>
+								<article>
+									<span class="image">
+										<img src="images/pic05.jpg" alt="" />
+									</span>
+									<header class="major">
+										<h3><a href="https://engineering.rice.edu/ieee_programming_competition" class="link">10th Award at IEEExtreme Competition</a></h3>
+										<p>Programmer, IEEE</p>
+									</header>
+								</article>
+							</section>
+
+						<!-- Two -->
+							<section id="two">
+								<div class="inner">
+									<header class="major">
+										<h2>Code a Hello World!</h2>
+									</header>
+                                    <header class="major">
+                                        <h3>Why I code?</h3>
+                                    </header>
+									<p>
+                                    I code because of my love for the projects and people I meet in this world. In the past, solving programming problems in competitions was my goal. Correct output and pass rate was the only thing I code for. Now, coding and hacking leads me to a new world where I can create, build and explore my own project. Especially during hackathons and coding competitions, I am always proud of what problem I have solved and how much progress I have made by learning unknown skills myself. </p>
+									<ul class="actions">
+										<li><a href="ehr.html" class="button next">Get Started</a></li>
+									</ul>
+								</div>
+							</section>
+
+					</div>
+
+                    <!-- Contact -->
+                    <section id="contact">
+                        <div class="inner">
+                            <section>
+                                <form method="post" action="#">
+                                    <div class="fields">
+                                        <div class="field half">
+                                            <label for="name">Name</label>
+                                            <input type="text" name="name" id="name" />
+                                        </div>
+                                        <div class="field half">
+                                            <label for="email">Email</label>
+                                            <input type="text" name="email" id="email" />
+                                        </div>
+                                        <div class="field">
+                                            <label for="message">Message</label>
+                                            <textarea name="message" id="message" rows="6"></textarea>
+                                        </div>
+                                    </div>
+                                    <ul class="actions">
+                                        <li><input type="submit" value="Send Message" class="primary" /></li>
+                                        <li><input type="reset" value="Clear" /></li>
+                                    </ul>
+                                </form>
+                            </section>
+                            <section class="split">
+                                <section>
+                                    <div class="contact-method">
+                                        <span class="icon solid alt fa-envelope"></span>
+                                        <h3>Email</h3>
+                                        <a href="#">xh23@rice.edu</a>
+                                    </div>
+                                </section>
+                                <section>
+                                    <div class="contact-method">
+                                        <span class="icon solid alt fa-phone"></span>
+                                        <h3>Phone</h3>
+                                        <span>(832) 276-4377 </span>
+                                    </div>
+</section>
+                                <section>
+                                    <div class="contact-method">
+                                        <span class="icon solid alt fa-home"></span>
+                                        <h3>Address</h3>
+                                        <span>6100 Main St, Rice University<br />
+                                            Houston, TX 77005<br />
+                                            United States of America</span>
+                                    </div>
+                                </section>
+                            </section>
+                        </div>
+                    </section>
+                    
+
+				<!-- Footer -->
+					<footer id="footer">
+						<div class="inner">
+							<ul class="icons">
+								<li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
+								<li><a href="https://www.facebook.com/Xinhao.rice" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li>
+								<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
+								<li><a href="https://github.com/Xin128" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+								<li><a href="https://www.linkedin.com/in/rice-xin-hao/" class="icon brands alt fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
+							</ul>
+						</div>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
 </html>
