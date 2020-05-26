@@ -1,4 +1,4 @@
-This is the portfolio website page for Xin Hao.
+## Portfolio website page for Xin Hao.
 
 Google STEP Internship Project week 2.
 
