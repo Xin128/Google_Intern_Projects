@@ -29,10 +29,8 @@ function addRandomGreeting() {
 
 
 /**
- * The above code is organized to show each individual step, but we can use an
- * ES6 feature called arrow functions to shorten the code. This function
- * combines all of the above code into a single Promise chain. You can use
- * whichever syntax makes the most sense to you.
+ * The function is to fetch a Promise from "/data" page, convert the response message 
+ * into text and add them into the fetch-container displayed on the webpage.    
  */
 function getHellofromFetchedPractice() {
   fetch('/data').then(response => response.text()).then((quote) => {
