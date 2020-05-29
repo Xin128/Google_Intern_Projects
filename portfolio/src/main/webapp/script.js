@@ -17,7 +17,7 @@
  */
 function addRandomGreeting() {
   const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
+      ['Noogler!', 'Dog Girl', 'Programmer', 'Food Lover'];
 
   // Pick a random greeting.
   const greeting = greetings[Math.floor(Math.random() * greetings.length)];
@@ -25,4 +25,15 @@ function addRandomGreeting() {
   // Add it to the page.
   const greetingContainer = document.getElementById('greeting-container');
   greetingContainer.innerText = greeting;
+}
+
+
+/**
+ * The function is to fetch a Promise from "/data" page, convert the response message 
+ * into text and add them into the fetch-container displayed on the webpage.    
+ */
+function getHellofromFetchedPractice() {
+  fetch('/data').then(response => response.text()).then((quote) => {
+    document.getElementById('fetch-container').innerText = quote;
+  });
 }
