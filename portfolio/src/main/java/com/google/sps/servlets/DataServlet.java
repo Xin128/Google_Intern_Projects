@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-/** Servlet that returns some example content. */
+/** Servlet that return some example content. */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
