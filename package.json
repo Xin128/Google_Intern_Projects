@@ -1,0 +1,29 @@
+{
+  "name": "Google_Intern_Projects",
+  "version": "1.0.0",
+  "description": "This repo contains Xin Hao's portfolio and SPS projects.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xin128/Google_Intern_Projects.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Xin128/Google_Intern_Projects/issues"
+  },
+  "homepage": "https://github.com/Xin128/Google_Intern_Projects#readme",
+  "devDependencies": {
+    "eslint": "^7.1.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-node": "^11.1.0",
+    "prettier": "^2.0.5"
+  }
+}
