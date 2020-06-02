@@ -27,12 +27,20 @@ import java.util.Arrays;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  ArrayList<String> msglist = new ArrayList<String> (Arrays.asList("Hi!","Ni Hao!","Bonjour!","Hola!"));
-  
+  ArrayList<String> msglist = new ArrayList<String>();
+  String jsonMsg;
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
     response.getWriter().println(this.convertArrayToJsonUsingGson(msglist));
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Get the input from the form.
+    String inputMsg = getParameter(request, "comment-input", "");
+    msglist.add(inputMsg);
+    response.sendRedirect("/index.html");
   }
 
   /**
@@ -42,6 +50,27 @@ public class DataServlet extends HttpServlet {
   private String convertArrayToJsonUsingGson(ArrayList<String> strList) {
     String json = new Gson().toJson(strList);
     return json;
+  }
+    /**
+   * Converts a ServerStats instance into a JSON string using the Gson library. Note: We first added
+   * the Gson library dependency to pom.xml.
+   */
+  private String convertTextToJsonUsingGson(String message) {
+    String json = new Gson().toJson(message);
+    System.out.println(json);
+    return json;
+  }
+
+    /**
+   * @return the request parameter, or the default value if the parameter
+   *         was not specified by the client
+   */
+  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+    String value = request.getParameter(name);
+    if (value == null) {
+      return defaultValue;
+    }
+    return value;
   }
 
 }
