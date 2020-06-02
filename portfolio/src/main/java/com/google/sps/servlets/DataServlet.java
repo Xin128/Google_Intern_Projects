@@ -27,7 +27,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 
-/** Servlet that return some example content. */
+
+/**
+  * Servlet that returns some example content. 
+  * Note: We first added the Gson library dependency to pom.xml.
+  */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
@@ -47,7 +51,7 @@ public class DataServlet extends HttpServlet {
         msglist.add(commentMsg);
     }
     response.setContentType("application/json;");
-    response.getWriter().println(this.convertArrayToJsonUsingGson(msglist));
+    response.getWriter().println(new Gson().toJson(msglist)) ;
   }
 
   @Override
@@ -67,16 +71,8 @@ public class DataServlet extends HttpServlet {
     response.sendRedirect("/index.html");
   }
 
-  /**
-   * Converts a list of string into a JSON string using the Gson library. Note: We first added
-   * the Gson library dependency to pom.xml.
-   */
-  private String convertArrayToJsonUsingGson(ArrayList<String> strList) {
-    String json = new Gson().toJson(strList);
-    return json;
-  }
 
-    /**
+  /**
    * @return the request parameter, or the default value if the parameter
    *         was not specified by the client
    */
