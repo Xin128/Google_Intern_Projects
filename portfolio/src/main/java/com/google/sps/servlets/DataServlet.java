@@ -47,7 +47,7 @@ public class DataServlet extends HttpServlet {
     response.sendRedirect("/index.html");
   }
 
-    /**
+  /**
    * @return the request parameter, or the default value if the parameter
    *         was not specified by the client
    */
