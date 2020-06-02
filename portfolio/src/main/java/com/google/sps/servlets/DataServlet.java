@@ -35,8 +35,8 @@ import java.util.ArrayList;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-
   String jsonMsg;
+  
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Create the query and prepared query to load comment entities from database
