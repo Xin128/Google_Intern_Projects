@@ -29,9 +29,9 @@ import java.util.ArrayList;
 
 
 /**
-* Servlet that returns some example content. 
-* Note: We first added the Gson library dependency to pom.xml.
-*/
+  * Servlet that returns some example content. 
+  * Note: We first added the Gson library dependency to pom.xml.
+  */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
