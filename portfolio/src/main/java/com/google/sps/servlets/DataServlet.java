@@ -17,6 +17,8 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -29,12 +31,23 @@ import java.util.ArrayList;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  ArrayList<String> msglist = new ArrayList<String>();
+
   String jsonMsg;
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Create the query and prepared query to load comment entities from database
+    Query query = new Query("Comment");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+    
+    // Add all comment contents to the msgList  
+    ArrayList<String> msglist = new ArrayList<String>();
+    for (Entity comment:results.asIterable()) {
+        String commentMsg = (String)comment.getProperty("content");
+        msglist.add(commentMsg);
+    }
     response.setContentType("application/json;");
-    // response.getWriter().println(this.convertArrayToJsonUsingGson(msglist));
+    response.getWriter().println(this.convertArrayToJsonUsingGson(msglist));
   }
 
   @Override
@@ -43,17 +56,19 @@ public class DataServlet extends HttpServlet {
     String inputMsg = getParameter(request, "comment-input", "");
 
     // Create an entity with received comment message
-    Entity commentEntity = new Entity("comment");
+    Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("content", inputMsg);
 
     // Used Datastore survice to store newly created comment entity
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
+
+    // Redirect back to the current page
     response.sendRedirect("/index.html");
   }
 
   /**
-   * Converts a ServerStats instance into a JSON string using the Gson library. Note: We first added
+   * Converts a list of string into a JSON string using the Gson library. Note: We first added
    * the Gson library dependency to pom.xml.
    */
   private String convertArrayToJsonUsingGson(ArrayList<String> strList) {
