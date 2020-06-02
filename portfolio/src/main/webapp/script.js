@@ -37,5 +37,3 @@ function getHellofromFetchedPractice() {
     document.getElementById('fetch-container').innerText = quote;
   });
 }
-
-}
