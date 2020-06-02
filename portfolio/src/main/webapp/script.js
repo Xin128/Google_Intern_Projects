@@ -38,15 +38,4 @@ function getHellofromFetchedPractice() {
   });
 }
 
-/**
- * The function is to fetch a Promise from "/data" page, convert the response message 
- * into text and add them into the fetch-container displayed on the webpage.    
- */
-function getDatafromJsonPractice() {
-  fetch('/data').then(response => response.json()).then((quote) => {
-      console.log(quote.x);
-      console.log(quote.y);
-      console.log(quote.z);
-
-  });
 }
