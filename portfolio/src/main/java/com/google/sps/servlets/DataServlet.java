@@ -27,7 +27,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 
-/** Servlet that return some example content. */
+
+/**
+* Servlet that returns some example content. 
+* Note: We first added the Gson library dependency to pom.xml.
+*/
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
