@@ -23,7 +23,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-/** Servlet that return some example content. */
+
+/**
+* Servlet that returns some example content. 
+* Note: We first added the Gson library dependency to pom.xml.
+*/
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
@@ -32,7 +36,7 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
-    response.getWriter().println(this.convertArrayToJsonUsingGson(msglist));
+    response.getWriter().println(new Gson().toJson(msglist)) ;
   }
 
   @Override
@@ -41,24 +45,6 @@ public class DataServlet extends HttpServlet {
     String inputMsg = getParameter(request, "comment-input", "");
     msglist.add(inputMsg);
     response.sendRedirect("/index.html");
-  }
-
-  /**
-   * Converts a ServerStats instance into a JSON string using the Gson library. Note: We first added
-   * the Gson library dependency to pom.xml.
-   */
-  private String convertArrayToJsonUsingGson(ArrayList<String> strList) {
-    String json = new Gson().toJson(strList);
-    return json;
-  }
-    /**
-   * Converts a ServerStats instance into a JSON string using the Gson library. Note: We first added
-   * the Gson library dependency to pom.xml.
-   */
-  private String convertTextToJsonUsingGson(String message) {
-    String json = new Gson().toJson(message);
-    System.out.println(json);
-    return json;
   }
 
     /**
