@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+var numComments = 3;
 /**
  * Adds a random description to the page.
  */
@@ -40,7 +41,11 @@ function getHellofromFetchedPractice() {
 
 
 function getCommentInForm() {
-  fetch('/data').then(response => response.text()).then((quote) => {
+  numComments = document.getElementById('quantity').value;
+  console.log(numComments);
+  var url = '/data?numComment='+numComments;
+  console.log(url);
+  fetch(url).then(response => response.text()).then((quote) => {
     document.getElementById('comment-container').innerText = quote;
   });
 }

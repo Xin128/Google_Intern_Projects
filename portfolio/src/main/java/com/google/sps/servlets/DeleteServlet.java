@@ -84,14 +84,6 @@ public class DataServlet extends HttpServlet {
     response.sendRedirect("/index.html");
   }
 
-  /**
-   * Converts a list of string into a JSON string using the Gson library. Note: We first added
-   * the Gson library dependency to pom.xml.
-   */
-  private String convertArrayToJsonUsingGson(ArrayList<String> strList) {
-    String json = new Gson().toJson(strList);
-    return json;
-  }
 
   /**
    * @return the request parameter, or the default value if the parameter
