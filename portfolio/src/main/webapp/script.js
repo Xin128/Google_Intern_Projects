@@ -51,3 +51,8 @@ function getCommentInForm() {
 function deleteAllComments() {
   fetch("/delete-data", { method: "POST" });
 }
+
+function deleteAllComments() {
+  const params = new URLSearchParams();
+  fetch("/delete-data", { method: "POST", body: params });
+}
