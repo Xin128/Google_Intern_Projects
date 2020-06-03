@@ -36,10 +36,9 @@ import java.util.Collections;
   */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+  int maxNumComments = 1;
+  ArrayList<String> msglist = new ArrayList<String>();
 
-  String jsonMsg;
-  int maxNumComments;
-  
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     maxNumComments = Integer.parseInt(request.getParameter("numComment"));
@@ -70,7 +69,10 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the input from the form.
-    String inputMsg = getParameter(request, "comment-input", "");
+    String inputMsg = request.getParameter("comment-input");
+    if (!inputMsg.isEmpty()) {
+        msglist.add(inputMsg);
+    }
 
     // Create an entity with received comment message
     Entity commentEntity = new Entity("Comment");
@@ -82,27 +84,6 @@ public class DataServlet extends HttpServlet {
 
     // Redirect back to the current page
     response.sendRedirect("/index.html");
-  }
-
-  /**
-   * Converts a list of string into a JSON string using the Gson library. Note: We first added
-   * the Gson library dependency to pom.xml.
-   */
-  private String convertArrayToJsonUsingGson(ArrayList<String> strList) {
-    String json = new Gson().toJson(strList);
-    return json;
-  }
-
-  /**
-   * @return the request parameter, or the default value if the parameter
-   *         was not specified by the client
-   */
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
-    String value = request.getParameter(name);
-    if (value == null) {
-      return defaultValue;
-    }
-    return value;
   }
 
 }
