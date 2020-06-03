@@ -14,18 +14,29 @@
 
 package com.google.sps.servlets;
 
+import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-/** Servlet that returns some example content. */
+
+/**
+  * Servlet that returns some example content. 
+  * Note: We first added the Gson library dependency to pom.xml.
+  */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+
+  ArrayList<String> msglist = new ArrayList<String> (Arrays.asList("Hi!","Ni Hao!","Bonjour!","Hola!"));
+  
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
-    response.getWriter().println("Hello Xin!");
+    response.setContentType("application/json;");
+    response.getWriter().println(new Gson().toJson(msglist));
   }
+
 }

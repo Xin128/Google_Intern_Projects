@@ -13,18 +13,18 @@
 // limitations under the License.
 
 /**
- * Adds a random greeting to the page.
+ * Adds a random description to the page.
  */
-function addRandomGreeting() {
-  const greetings =
+function addRandomDescription() {
+  const descriptions =
       ['Noogler!', 'Dog Girl', 'Programmer', 'Food Lover'];
 
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+  // Pick a random description.
+  const description = descriptions[Math.floor(Math.random() * descriptions.length)];
 
   // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
+  const descriptionContainer = document.getElementById('description-container');
+  descriptionContainer.innerText = description;
 }
 
 
