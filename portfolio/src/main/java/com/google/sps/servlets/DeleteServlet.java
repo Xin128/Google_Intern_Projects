@@ -16,85 +16,30 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.gson.Gson;
+// import com.google.appengine.api.datastore.Entity;
+// import com.google.appengine.api.datastore.PreparedQuery;
+// import com.google.appengine.api.datastore.Query;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
-
 
 /**
-  * Servlet that returns some example content. 
-  * Note: We first added the Gson library dependency to pom.xml.
-  */
-@WebServlet("/data")
-public class DataServlet extends HttpServlet {
-
-  String jsonMsg;
-  int maxNumComments;
-  
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    maxNumComments = Integer.parseInt(request.getParameter("numComment"));
-    // Create the query and prepared query to load comment entities from database
-    Query query = new Query("Comment");
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
-    
-    // Add all comment contents to the msglist  
-    ArrayList<String> msglist = new ArrayList<String>();
-    for (Entity comment:results.asIterable()) {
-        String commentMsg = (String)comment.getProperty("content");
-        msglist.add(commentMsg);
-    }
-    Collections.shuffle(msglist);
-
-    // Limit number of comments;
-    List<String> updatedStrList;
-    if (msglist.size() > maxNumComments) {
-        updatedStrList = msglist.subList(0,maxNumComments);
-    } else {
-        updatedStrList = msglist;
-    }
-    response.setContentType("application/json;");
-    response.getWriter().println(new Gson().toJson(updatedStrList)) ;
-  }
+ * Servlet that returns some example content. Note: We first added the Gson
+ * library dependency to pom.xml.
+ */
+@WebServlet("/delete-data")
+public class DeleteServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Get the input from the form.
-    String inputMsg = getParameter(request, "comment-input", "");
-
-    // Create an entity with received comment message
-    Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("content", inputMsg);
 
     // Used Datastore survice to store newly created comment entity
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(commentEntity);
 
-    // Redirect back to the current page
-    response.sendRedirect("/index.html");
-  }
+    System.out.println(datastore.toString());
 
-
-  /**
-   * @return the request parameter, or the default value if the parameter
-   *         was not specified by the client
-   */
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
-    String value = request.getParameter(name);
-    if (value == null) {
-      return defaultValue;
-    }
-    return value;
   }
 
 }
