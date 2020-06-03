@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet that returns some example content. Note: We first added the Gson
+ * Servlet that deletes comments in database. Note: We first added the Gson
  * library dependency to pom.xml.
  */
 @WebServlet("/delete-data")
@@ -44,7 +44,6 @@ public class DeleteServlet extends HttpServlet {
       Key commentEntityKey = comment.getKey();
       datastore.delete(commentEntityKey);
     }
-    System.out.println(datastore.toString());
   }
 }
 

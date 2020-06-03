@@ -31,7 +31,7 @@ import java.util.Collections;
 
 
 /**
-  * Servlet that returns some example content. 
+  * Servlet that returns comments in database. 
   * Note: We first added the Gson library dependency to pom.xml.
   */
 @WebServlet("/data")
