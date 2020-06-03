@@ -27,7 +27,6 @@ function addRandomDescription() {
   descriptionContainer.innerText = description;
 }
 
-
 /**
  * The function is to fetch a Promise from "/data" page, convert the response message 
  * into text and add them into the fetch-container displayed on the webpage.    
@@ -37,7 +36,6 @@ function getHellofromFetchedPractice() {
     document.getElementById('fetch-container').innerText = quote;
   });
 }
-
 
 /**
  * The function is to fetch the comments from "/data" page, convert the comment message 
