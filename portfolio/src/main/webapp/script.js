@@ -17,35 +17,41 @@ var numComments = 3;
  * Adds a random description to the page.
  */
 function addRandomDescription() {
-  const descriptions =
-      ['Noogler!', 'Dog Girl', 'Programmer', 'Food Lover'];
+  const descriptions = ["Noogler!", "Dog Girl", "Programmer", "Food Lover"];
 
   // Pick a random description.
-  const description = descriptions[Math.floor(Math.random() * descriptions.length)];
+  const description =
+    descriptions[Math.floor(Math.random() * descriptions.length)];
 
   // Add it to the page.
-  const descriptionContainer = document.getElementById('description-container');
+  const descriptionContainer = document.getElementById("description-container");
   descriptionContainer.innerText = description;
 }
 
-
 /**
- * The function is to fetch a Promise from "/data" page, convert the response message 
- * into text and add them into the fetch-container displayed on the webpage.    
+ * The function is to fetch a Promise from "/data" page, convert the response message
+ * into text and add them into the fetch-container displayed on the webpage.
  */
 function getHellofromFetchedPractice() {
-  fetch('/data').then(response => response.text()).then((quote) => {
-    document.getElementById('fetch-container').innerText = quote;
-  });
+  fetch("/data")
+    .then((response) => response.text())
+    .then((quote) => {
+      document.getElementById("fetch-container").innerText = quote;
+    });
 }
 
-
 function getCommentInForm() {
-  numComments = document.getElementById('quantity').value;
+  numComments = document.getElementById("quantity").value;
   console.log(numComments);
-  var url = '/data?numComment='+numComments;
+  var url = "/data?numComment=" + numComments;
   console.log(url);
-  fetch(url).then(response => response.text()).then((quote) => {
-    document.getElementById('comment-container').innerText = quote;
-  });
+  fetch(url)
+    .then((response) => response.text())
+    .then((quote) => {
+      document.getElementById("comment-container").innerText = quote;
+    });
+}
+
+function deleteAllComments() {
+  fetch("/delete-data", { method: "POST" });
 }
