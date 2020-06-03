@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var numComments = 3;
+var numComments = 1;
 /**
  * Adds a random description to the page.
  */
@@ -42,15 +42,14 @@ function getHellofromFetchedPractice() {
 
 function getCommentInForm() {
   numComments = document.getElementById("quantity").value;
+  console.log(numComments);
+  console.log(numComments == '');
   var url = "/data?numComment=" + numComments;
   fetch(url).then(response => response.text()).then((quote) => {
     document.getElementById('comment-container').innerText = quote;
   });
 }
 
-function deleteAllComments() {
-  fetch("/delete-data", { method: "POST" });
-}
 
 function deleteAllComments() {
   const params = new URLSearchParams();
