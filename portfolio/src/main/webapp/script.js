@@ -39,8 +39,12 @@ function getHellofromFetchedPractice() {
 }
 
 
+/**
+ * The function is to fetch the comments from "/data" page, convert the comment message 
+ * into text and add them into the comment containter displayed on the webpage.    
+ */
 function getCommentInForm() {
-  fetch('/data').then(response => response.text()).then((quote) => {
-    document.getElementById('comment-container').innerText = quote;
+  fetch('/data').then(response => response.text()).then((comment) => {
+    document.getElementById('comment-container').innerText = comment;
   });
 }
