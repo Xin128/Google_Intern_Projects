@@ -41,9 +41,10 @@ function getHellofromFetchedPractice() {
 }
 
 function getCommentInForm() {
-  numComments = document.getElementById("quantity").value;
-  console.log(numComments);
-  console.log(numComments == '');
+  inputVal = document.getElementById("quantity").value;
+  if (inputVal != '') { 
+      numComments = inputVal;
+  } 
   var url = "/data?numComment=" + numComments;
   fetch(url).then(response => response.text()).then((quote) => {
     document.getElementById('comment-container').innerText = quote;
