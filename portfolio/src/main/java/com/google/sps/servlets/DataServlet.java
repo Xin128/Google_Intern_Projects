@@ -37,7 +37,6 @@ import java.util.Collections;
   */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-    
   int maxNumComments = 1;
   ArrayList<String> msglist = new ArrayList<String>();
   String comment = "Comment";
@@ -48,6 +47,7 @@ public class DataServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String inputNumComment = "numComment";
     maxNumComments = Integer.parseInt(request.getParameter(inputNumComment));
+    
     // Create the query and prepared query to load comment entities from database
     Query query = new Query(comment).addSort(timestampProperty, SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
