@@ -28,17 +28,6 @@ function addRandomDescription() {
   descriptionContainer.innerText = description;
 }
 
-/**
- * The function is to fetch a Promise from "/data" page, convert the response message
- * into text and add them into the fetch-container displayed on the webpage.
- */
-function getHellofromFetchedPractice() {
-  fetch("/data")
-    .then((response) => response.text())
-    .then((quote) => {
-      document.getElementById("fetch-container").innerText = quote;
-    });
-}
 
 function getCommentInForm() {
   inputVal = document.getElementById("quantity").value;
@@ -55,4 +44,16 @@ function getCommentInForm() {
 function deleteAllComments() {
   const params = new URLSearchParams();
   fetch("/delete-data", { method: "POST", body: params });
+}
+
+/**
+ * The function is to fetch a Promise from "/userLogIn" page, convert the logIn status message
+ * into text and add them into the fetch-container displayed on the webpage.
+ */
+function getUserLogInStatus() {
+  fetch("/userLogIn")
+    .then((response) => response.text())
+    .then((quote) => {
+      document.getElementById("userInfo-container").innerText = quote;
+    });
 }
