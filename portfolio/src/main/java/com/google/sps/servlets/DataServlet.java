@@ -19,6 +19,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -38,20 +39,24 @@ import java.util.Collections;
 public class DataServlet extends HttpServlet {
     
   int maxNumComments = 1;
+  ArrayList<String> msglist = new ArrayList<String>();
   String comment = "Comment";
+  String contentProperty = "content";
+  String timestampProperty = "timestamp";
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    maxNumComments = Integer.parseInt(request.getParameter("numComment"));
+    String inputNumComment = "numComment";
+    maxNumComments = Integer.parseInt(request.getParameter(inputNumComment));
     // Create the query and prepared query to load comment entities from database
-    Query query = new Query(comment);
+    Query query = new Query(comment).addSort(timestampProperty, SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
     
     // Add all comment contents to the msglist  
     ArrayList<String> msglist = new ArrayList<String>();
     for (Entity comment:results.asIterable()) {
-      String commentMsg = (String)comment.getProperty("content");
+      String commentMsg = (String)comment.getProperty(contentProperty);
       msglist.add(commentMsg);
     }
     Collections.shuffle(msglist);
@@ -70,15 +75,17 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the input from the form.
-    String inputMsg = request.getParameter("comment-input");
+    String inputParams = "comment-input";
+    String inputMsg = request.getParameter(inputParams);
     if (!inputMsg.isEmpty()) {
         msglist.add(inputMsg);
     }
 
     // Create an entity with received comment message
+    long timestamp = System.currentTimeMillis();
     Entity commentEntity = new Entity(comment);
-    String contentProperty = "content";
     commentEntity.setProperty(contentProperty, inputMsg);
+    commentEntity.setProperty(timestampProperty,timestamp);
 
     // Used Datastore survice to store newly created comment entity
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
