@@ -36,7 +36,7 @@ import java.util.ArrayList;
 public class DataServlet extends HttpServlet {
 
   String comment = "Comment";
-  
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Create the query and prepared query to load comment entities from database
@@ -51,13 +51,16 @@ public class DataServlet extends HttpServlet {
       msglist.add(commentMsg);
     }
     response.setContentType("application/json;");
-    response.getWriter().println(new Gson().toJson(msglist)) ;
+    response.getWriter().println(new Gson().toJson(msglist));
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the input from the form.
-    String inputMsg = getParameter(request, "comment-input", "");
+    String inputMsg = request.getParameter("comment-input");
+    if (!inputMsg.isEmpty()) {
+        msglist.add(inputMsg);
+    }
 
     // Create an entity with received comment message
     Entity commentEntity = new Entity(comment);
@@ -72,17 +75,7 @@ public class DataServlet extends HttpServlet {
     response.sendRedirect("/index.html");
   }
 
-
-  /**
-   * @return the request parameter, or the default value if the parameter
-   *         was not specified by the client
-   */
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
-    String value = request.getParameter(name);
-    if (value == null) {
-      return defaultValue;
-    }
-    return value;
+    response.sendRedirect("/index.html");
   }
 
 }
