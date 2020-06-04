@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 /**
@@ -31,12 +30,22 @@ import java.util.Arrays;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  ArrayList<String> msglist = new ArrayList<String> (Arrays.asList("Hi!","Ni Hao!","Bonjour!","Hola!"));
-  
+  ArrayList<String> msglist = new ArrayList<String>();
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(msglist));
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Get the input from the form.
+    String inputMsg = request.getParameter("comment-input");
+    if (!inputMsg.isEmpty()) {
+        msglist.add(inputMsg);
+    }
+    response.sendRedirect("/index.html");
   }
 
 }
