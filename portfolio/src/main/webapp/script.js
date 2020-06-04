@@ -28,18 +28,6 @@ function addRandomDescription() {
   descriptionContainer.innerText = description;
 }
 
-/**
- * The function is to fetch a Promise from "/data" page, convert the response message
- * into text and add them into the fetch-container displayed on the webpage.
- */
-function getHellofromFetchedPractice() {
-  fetch("/data")
-    .then((response) => response.text())
-    .then((quote) => {
-      document.getElementById("fetch-container").innerText = quote;
-    });
-}
-
 function getCommentInForm() {
   inputVal = document.getElementById("quantity").value;
   if (inputVal != '') { 
@@ -50,7 +38,6 @@ function getCommentInForm() {
     document.getElementById('comment-container').innerText = quote;
   });
 }
-
 
 function deleteAllComments() {
   const params = new URLSearchParams();
