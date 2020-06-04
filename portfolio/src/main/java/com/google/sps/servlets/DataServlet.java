@@ -36,22 +36,23 @@ import java.util.Collections;
   */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+    
   int maxNumComments = 1;
-  ArrayList<String> msglist = new ArrayList<String>();
+  String comment = "Comment";
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     maxNumComments = Integer.parseInt(request.getParameter("numComment"));
     // Create the query and prepared query to load comment entities from database
-    Query query = new Query("Comment");
+    Query query = new Query(comment);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
     
     // Add all comment contents to the msglist  
     ArrayList<String> msglist = new ArrayList<String>();
     for (Entity comment:results.asIterable()) {
-        String commentMsg = (String)comment.getProperty("content");
-        msglist.add(commentMsg);
+      String commentMsg = (String)comment.getProperty("content");
+      msglist.add(commentMsg);
     }
     Collections.shuffle(msglist);
 
@@ -75,8 +76,9 @@ public class DataServlet extends HttpServlet {
     }
 
     // Create an entity with received comment message
-    Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("content", inputMsg);
+    Entity commentEntity = new Entity(comment);
+    String contentProperty = "content";
+    commentEntity.setProperty(contentProperty, inputMsg);
 
     // Used Datastore survice to store newly created comment entity
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
