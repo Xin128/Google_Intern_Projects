@@ -48,6 +48,9 @@ public class DataServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the limiting number of comments
     String requestedNumComment = request.getParameter(NUM_COMMENT_FORM);
+    if (requestedNumComment == null) {
+        return; 
+    }
     int maxNumComments = Integer.parseInt(requestedNumComment);
     
     // Create the query and prepared query to load comment entities from database
@@ -71,6 +74,9 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the input from the form.
     String inputMsg = request.getParameter(INPUT_MSG_FORM);
+    if (inputMsg == null) {
+        return; 
+    }
     
     if (!inputMsg.isEmpty()) {
       // Create an entity with received comment message
