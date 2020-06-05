@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Collections;
 
 
 /**
@@ -41,13 +40,13 @@ public class DataServlet extends HttpServlet {
   private final String CONTENT_PROPERTY = "content";
   private final int DEFAULT_MAX_COMMENT_NUM = 1;
   private final String INPUT_MSG_FORM = "comment-input";
+  private final String NUM_COMMENT_FORM = "numComment";
   private final String TIMESTAMP_PROPERTY = "timestamp";
 
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String inputNumComment = "numComment";
-    String requestedNumComment = request.getParameter(inputNumComment);
+    String requestedNumComment = request.getParameter(NUM_COMMENT_FORM);
     // Get the limiting number of comments
     int maxNumComments;
     if (requestedNumComment == null) {
@@ -64,8 +63,8 @@ public class DataServlet extends HttpServlet {
     
     // Add all comment contents to the msglist  
     ArrayList<String> msglist = new ArrayList<String>();
-    for (Entity comment:results.asIterable()) {
-      String commentMsg = (String)comment.getProperty(CONTENT_PROPERTY);
+    for (Entity commentEntity:results.asIterable()) {
+      String commentMsg = (String)commentEntity.getProperty(CONTENT_PROPERTY);
       msglist.add(commentMsg);
     }
 
