@@ -37,34 +37,42 @@ import java.util.Collections;
   */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  int maxNumComments = 1;
-  ArrayList<String> msglist = new ArrayList<String>();
-  String comment = "Comment";
-  String contentProperty = "content";
-  String timestampProperty = "timestamp";
+  protected static final String COMMENT = "Comment";
+  private final String CONTENT_PROPERTY = "content";
+  private final int DEFAULT_MAX_COMMENT_NUM = 1;
+  private final String INPUT_MSG_FORM = "comment-input";
+  private final String TIMESTAMP_PROPERTY = "timestamp";
+
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String inputNumComment = "numComment";
-    maxNumComments = Integer.parseInt(request.getParameter(inputNumComment));
+    String requestedNumComment = request.getParameter(inputNumComment);
+    // Get the limiting number of comments
+    int maxNumComments;
+    if (requestedNumComment == null) {
+        maxNumComments = DEFAULT_MAX_COMMENT_NUM;
+    } else {
+        maxNumComments = Integer.parseInt(requestedNumComment);
+    }
     
     // Create the query and prepared query to load comment entities from database
-    Query query = new Query(comment).addSort(timestampProperty, SortDirection.DESCENDING);
+    Query query = new Query(COMMENT).addSort(TIMESTAMP_PROPERTY, SortDirection.DESCENDING);
+
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
     
     // Add all comment contents to the msglist  
     ArrayList<String> msglist = new ArrayList<String>();
     for (Entity comment:results.asIterable()) {
-      String commentMsg = (String)comment.getProperty(contentProperty);
+      String commentMsg = (String)comment.getProperty(CONTENT_PROPERTY);
       msglist.add(commentMsg);
     }
-    Collections.shuffle(msglist);
 
     // Limit number of comments;
     List<String> updatedStrList;
     if (msglist.size() > maxNumComments) {
-        updatedStrList = msglist.subList(0,maxNumComments);
+        updatedStrList = msglist.subList(0, maxNumComments);
     } else {
         updatedStrList = msglist;
     }
@@ -75,22 +83,19 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the input from the form.
-    String inputParams = "comment-input";
-    String inputMsg = request.getParameter(inputParams);
+    String inputMsg = request.getParameter(INPUT_MSG_FORM);
     if (!inputMsg.isEmpty()) {
-        msglist.add(inputMsg);
+      // Create an entity with received comment message
+      long timestamp = System.currentTimeMillis();
+      // Create an entity with received comment message
+      Entity commentEntity = new Entity(COMMENT);
+      commentEntity.setProperty(CONTENT_PROPERTY, inputMsg);
+      commentEntity.setProperty(TIMESTAMP_PROPERTY,timestamp);
+
+      // Used Datastore survice to store newly created comment entity
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      datastore.put(commentEntity);
     }
-
-    // Create an entity with received comment message
-    long timestamp = System.currentTimeMillis();
-    Entity commentEntity = new Entity(comment);
-    commentEntity.setProperty(contentProperty, inputMsg);
-    commentEntity.setProperty(timestampProperty,timestamp);
-
-    // Used Datastore survice to store newly created comment entity
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(commentEntity);
-
     // Redirect back to the current page
     response.sendRedirect("/index.html");
   }

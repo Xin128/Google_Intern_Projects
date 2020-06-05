@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet("/delete-data")
 public class DeleteServlet extends HttpServlet {
-  String commentStr = "Comment";
+  String commentStr = DataServlet.COMMENT;
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -44,6 +44,8 @@ public class DeleteServlet extends HttpServlet {
       Key commentEntityKey = comment.getKey();
       datastore.delete(commentEntityKey);
     }
+    // Redirect back to the current page
+    response.sendRedirect("/index.html");
   }
 }
 
