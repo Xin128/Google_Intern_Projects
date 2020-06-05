@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
@@ -27,7 +28,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -46,14 +46,9 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String requestedNumComment = request.getParameter(NUM_COMMENT_FORM);
     // Get the limiting number of comments
-    int maxNumComments;
-    if (requestedNumComment == null) {
-        maxNumComments = DEFAULT_MAX_COMMENT_NUM;
-    } else {
-        maxNumComments = Integer.parseInt(requestedNumComment);
-    }
+    String requestedNumComment = request.getParameter(NUM_COMMENT_FORM);
+    int maxNumComments = Integer.parseInt(requestedNumComment);
     
     // Create the query and prepared query to load comment entities from database
     Query query = new Query(COMMENT).addSort(TIMESTAMP_PROPERTY, SortDirection.DESCENDING);
@@ -61,32 +56,25 @@ public class DataServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
     
-    // Add all comment contents to the msglist  
+    // Add limited number comment contents to the msglist  
     ArrayList<String> msglist = new ArrayList<String>();
-    for (Entity commentEntity:results.asIterable()) {
+    for (Entity commentEntity:results.asList(FetchOptions.Builder.withLimit(maxNumComments))) {
       String commentMsg = (String)commentEntity.getProperty(CONTENT_PROPERTY);
       msglist.add(commentMsg);
     }
 
-    // Limit number of comments;
-    List<String> updatedStrList;
-    if (msglist.size() > maxNumComments) {
-        updatedStrList = msglist.subList(0, maxNumComments);
-    } else {
-        updatedStrList = msglist;
-    }
     response.setContentType("application/json;");
-    response.getWriter().println(new Gson().toJson(updatedStrList)) ;
+    response.getWriter().println(new Gson().toJson(msglist)) ;
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the input from the form.
     String inputMsg = request.getParameter(INPUT_MSG_FORM);
+    
     if (!inputMsg.isEmpty()) {
       // Create an entity with received comment message
       long timestamp = System.currentTimeMillis();
-      // Create an entity with received comment message
       Entity commentEntity = new Entity(COMMENT);
       commentEntity.setProperty(CONTENT_PROPERTY, inputMsg);
       commentEntity.setProperty(TIMESTAMP_PROPERTY,timestamp);
