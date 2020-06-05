@@ -35,19 +35,20 @@ import java.util.ArrayList;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  String comment = "Comment";
+  private final String COMMENT = "Comment";
+  private final String CONTENT_PROPERTY = "content";
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Create the query and prepared query to load comment entities from database
-    Query query = new Query(comment);
+    Query query = new Query(COMMENT);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
     
     // Add all comment contents to the msgList  
     ArrayList<String> msglist = new ArrayList<String>();
-    for (Entity comment:results.asIterable()) {
-      String commentMsg = (String)comment.getProperty("content");
+    for (Entity commentEntity:results.asIterable()) {
+      String commentMsg = (String)commentEntity.getProperty("content");
       msglist.add(commentMsg);
     }
     response.setContentType("application/json;");
@@ -59,23 +60,17 @@ public class DataServlet extends HttpServlet {
     // Get the input from the form.
     String inputMsg = request.getParameter("comment-input");
     if (!inputMsg.isEmpty()) {
-        msglist.add(inputMsg);
+      // Create an entity with received comment message
+      Entity commentEntity = new Entity(COMMENT);
+      commentEntity.setProperty(CONTENT_PROPERTY, inputMsg);
+
+      // Used Datastore survice to store newly created comment entity
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      datastore.put(commentEntity);
     }
-
-    // Create an entity with received comment message
-    Entity commentEntity = new Entity(comment);
-    String contentProperty = "content";
-    commentEntity.setProperty(contentProperty, inputMsg);
-
-    // Used Datastore survice to store newly created comment entity
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(commentEntity);
-
     // Redirect back to the current page
     response.sendRedirect("/index.html");
   }
 
-    response.sendRedirect("/index.html");
-  }
 
 }
