@@ -12,37 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const DEFAULT_MAX_COMMENT_NUM=1
+
 /**
  * Adds a random description to the page.
  */
 function addRandomDescription() {
-  const descriptions =
-      ['Noogler!', 'Dog Girl', 'Programmer', 'Food Lover'];
+  const descriptions = ["Noogler!", "Dog Girl", "Programmer", "Food Lover"];
 
   // Pick a random description.
-  const description = descriptions[Math.floor(Math.random() * descriptions.length)];
+  const description =
+    descriptions[Math.floor(Math.random() * descriptions.length)];
 
   // Add it to the page.
-  const descriptionContainer = document.getElementById('description-container');
+  const descriptionContainer = document.getElementById("description-container");
   descriptionContainer.innerText = description;
 }
 
-/**
- * The function is to fetch a Promise from "/data" page, convert the response message 
- * into text and add them into the fetch-container displayed on the webpage.    
- */
-function getHellofromFetchedPractice() {
-  fetch('/data').then(response => response.text()).then((quote) => {
-    document.getElementById('fetch-container').innerText = quote;
+function getCommentInForm() {
+  inputVal = document.getElementById("quantity").value;
+  var numComments;
+  if (inputVal != '') { 
+      numComments = inputVal;
+  } else {
+      numComments = DEFAULT_MAX_COMMENT_NUM;
+  }
+  var url = "/data?numComment=" + numComments;
+  fetch(url).then(response => response.text()).then((quote) => {
+    document.getElementById('comment-container').innerText = quote;
   });
 }
 
-/**
- * The function is to fetch the comments from "/data" page, convert the comment message 
- * into text and add them into the comment containter displayed on the webpage.    
- */
-function getCommentInForm() {
-  fetch('/data').then(response => response.text()).then((comment) => {
-    document.getElementById('comment-container').innerText = comment;
-  });
+function deleteAllComments() {
+  const params = new URLSearchParams();
+  fetch("/delete-data", { method: "POST", body: params });
 }
