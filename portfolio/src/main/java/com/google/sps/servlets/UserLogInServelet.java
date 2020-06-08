@@ -38,28 +38,20 @@ public class UserLogInServelet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("text/html");
-
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
       System.out.println("user log in");
       String userEmail = userService.getCurrentUser().getEmail();
       String urlToRedirectToAfterUserLogsOut = "/";
-      String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
-      System.out.println("userEmail: " +userEmail);
-      System.out.println("logoutUrl: " +logoutUrl);
-      System.out.println("urlToRedirectToAfterUserLogsOut: " +urlToRedirectToAfterUserLogsOut);
-      response.getWriter().println("<p>Hello " + userEmail + "!</p>");
+      response.getWriter().println("You have already logged in! "); 
+      response.getWriter().println("Hello " + userEmail + "!");
       response.getWriter().println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
-      response.sendRedirect("/userLogIn");
 
     } else {
       System.out.println("user does not log in");
       String urlToRedirectToAfterUserLogsIn = "/";
       String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
-      System.out.println("login: " +loginUrl);
-      response.getWriter().println("<p>Hello stranger.</p>");
       response.getWriter().println("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
-      response.sendRedirect("/userLogIn");
     }
   }
 
@@ -84,7 +76,7 @@ public class UserLogInServelet extends HttpServlet {
     messageEntity.setProperty("timestamp", System.currentTimeMillis());
     datastore.put(messageEntity);
 
-    // Redirect to /shoutbox. The request will be routed to the doGet() function above.
+    // Redirect to /userLogIn. The request will be routed to the doGet() function above.
     response.sendRedirect("/userLogIn");
   }
 

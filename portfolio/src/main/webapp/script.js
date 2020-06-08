@@ -52,8 +52,8 @@ function deleteAllComments() {
  */
 function getUserLogInStatus() {
   fetch("/userLogIn")
-    .then((response) => response.text())
+    .then((response) =>response.text())
     .then((quote) => {
-      document.getElementById("userInfo-container").innerText = quote;
+      document.getElementById("userInfo-container").innerHTML = quote;
     });
 }
