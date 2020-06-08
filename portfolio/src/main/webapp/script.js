@@ -52,8 +52,15 @@ function deleteAllComments() {
  */
 function getUserLogInStatus() {
   fetch("/userLogIn")
-    .then((response) =>response.text())
+    .then((response) =>response.json())
     .then((quote) => {
-      document.getElementById("userInfo-container").innerHTML = quote;
+      if (quote.status == 1) {
+          document.getElementById("form-blk").style.display = "block";
+          document.getElementById("userInfo-container").innerHTML = "<p> Hello" + quote.email + "</p> <p>Logout <a href=\"" + quote.logoutUrl + "\">here</a>.</p>"
+      } else {
+          document.getElementById("form-blk").style.display = "none";
+          document.getElementById("userInfo-container").innerHTML = "<p> Hello Stranger</p> <p>Login <a href=\"" + quote.loginUrl + "\">here</a>.</p>"
+      }
     });
+
 }

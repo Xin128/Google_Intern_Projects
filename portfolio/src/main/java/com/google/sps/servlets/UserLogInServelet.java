@@ -21,12 +21,15 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
   * Servlet that ensure User's log in status.
@@ -34,25 +37,27 @@ import javax.servlet.http.HttpServletResponse;
   */
 @WebServlet("/userLogIn")
 public class UserLogInServelet extends HttpServlet {
-  
+  Map<String,Object> userInfo = new HashMap<String, Object>();
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html");
+    response.setContentType("application/json");
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
-      System.out.println("user log in");
       String userEmail = userService.getCurrentUser().getEmail();
       String urlToRedirectToAfterUserLogsOut = "/";
-      response.getWriter().println("You have already logged in! "); 
-      response.getWriter().println("Hello " + userEmail + "!");
-      response.getWriter().println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
-
+      String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
+      System.out.println(userService.getCurrentUser());
+      userInfo.put("status", 1);
+      userInfo.put("email", userEmail);
+      userInfo.put("logoutUrl", logoutUrl);
     } else {
-      System.out.println("user does not log in");
       String urlToRedirectToAfterUserLogsIn = "/";
       String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
-      response.getWriter().println("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
+      userInfo.put("status", 0);
+      userInfo.put("loginUrl",loginUrl);
     }
+    response.getWriter().println(new Gson().toJson(userInfo));
   }
 
   @Override
@@ -72,7 +77,6 @@ public class UserLogInServelet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity messageEntity = new Entity("Message");
     messageEntity.setProperty("text", text);
-    messageEntity.setProperty("email", email);
     messageEntity.setProperty("timestamp", System.currentTimeMillis());
     datastore.put(messageEntity);
 
