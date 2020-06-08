@@ -16,6 +16,8 @@ const DEFAULT_MAX_COMMENT_NUM = 1
 const DISPLAY = "block";
 const HIDE = "none";
 
+google.charts.load("current", {"packages":["geochart"]});
+google.charts.setOnLoadCallback(drawChart);
 /**
  * Adds a random description to the page.
  */
@@ -64,5 +66,31 @@ function getUserLogInStatus() {
             "<p> Hello Stranger</p> <p>Please <a href=\"" + loginfo.loginUrl + "\">login</a> first.</p>"
       }
     });
+}
 
+
+/** Creates a chart and adds it to the page. */
+function drawChart() {
+  const data = new google.visualization.DataTable();
+  data.addColumn('string', 'Country');
+  data.addColumn('number', 'Years I stay');
+        data.addRows([
+          ['China', 16],
+          ['Germany', 2],
+          ['United States', 2],
+          ['France', 2],
+          ['Italy', 2],
+          ['Australia', 2],
+          ['Korea', 5]
+        ]);
+
+  const options = {
+    'title': 'Countries I have been to',
+    'width':500,
+    'height':400
+  };
+
+  const chart = new google.visualization.GeoChart(
+      document.getElementById('chart-container'));
+  chart.draw(data,options);
 }
