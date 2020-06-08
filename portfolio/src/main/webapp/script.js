@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var numComments = 1;
+const DEFAULT_MAX_COMMENT_NUM=1
+
 /**
  * Adds a random description to the page.
  */
@@ -28,18 +29,19 @@ function addRandomDescription() {
   descriptionContainer.innerText = description;
 }
 
-
 function getCommentInForm() {
   inputVal = document.getElementById("quantity").value;
+  var numComments;
   if (inputVal != '') { 
       numComments = inputVal;
-  } 
+  } else {
+      numComments = DEFAULT_MAX_COMMENT_NUM;
+  }
   var url = "/data?numComment=" + numComments;
   fetch(url).then(response => response.text()).then((quote) => {
     document.getElementById('comment-container').innerText = quote;
   });
 }
-
 
 function deleteAllComments() {
   const params = new URLSearchParams();

@@ -23,7 +23,6 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -58,28 +57,5 @@ public class UserLogInServelet extends HttpServlet {
     }
     response.getWriter().println(new Gson().toJson(userInfo));
   }
-
-//   @Override
-//   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//     UserService userService = UserServiceFactory.getUserService();
-
-//     // Only logged-in users can post messages
-//     if (!userService.isUserLoggedIn()) {
-//       response.sendRedirect("/userLogIn");
-//       return;
-//     }
-
-//     String text = request.getParameter("text");
-//     String email = userService.getCurrentUser().getEmail();
-
-//     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-//     Entity messageEntity = new Entity("Message");
-//     messageEntity.setProperty("text", text);
-//     messageEntity.setProperty("timestamp", System.currentTimeMillis());
-//     datastore.put(messageEntity);
-
-//     // Redirect to /userLogIn. The request will be routed to the doGet() function above.
-//     response.sendRedirect("/userLogIn");
-//   }
 
 }

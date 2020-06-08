@@ -33,17 +33,19 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet("/delete-data")
 public class DeleteServlet extends HttpServlet {
-
+  String commentStr = DataServlet.COMMENT;
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    Query query = new Query("Comment");
+    Query query = new Query(commentStr);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
     for (Entity comment : results.asIterable()) {
       Key commentEntityKey = comment.getKey();
       datastore.delete(commentEntityKey);
     }
+    // Redirect back to the current page
+    response.sendRedirect("/index.html");
   }
 }
 
