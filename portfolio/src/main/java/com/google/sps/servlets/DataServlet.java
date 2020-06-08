@@ -19,6 +19,8 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -28,6 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
+import java.util.Map;
+import java.util.HashMap;
 
 
 /**
@@ -48,12 +52,19 @@ public class DataServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     
     // Add all comment contents to the msglist  
-    ArrayList<String> msglist = new ArrayList<String>();
+    HashMap<String, ArrayList<String>> userComment = new HashMap<String, ArrayList<String>>();
     for (Entity comment:results.asIterable()) {
         String commentMsg = (String)comment.getProperty("content");
-        msglist.add(commentMsg);
+        String commentUser= (String)comment.getProperty("userEmail");
+        ArrayList<String> msglist = userComment.get(commentUser);
+        if (msglist == null) {
+            msglist = new ArrayList<String>();
+            msglist.add(commentMsg);
+            userComment.put(commentUser, msglist);
+        } else {
+            msglist.add(commentMsg);
+        }
     }
-    Collections.shuffle(msglist);
 
     // Limit number of comments;
     List<String> updatedStrList;
@@ -62,8 +73,9 @@ public class DataServlet extends HttpServlet {
     } else {
         updatedStrList = msglist;
     }
+    System.out.println(userComment);
     response.setContentType("application/json;");
-    response.getWriter().println(new Gson().toJson(updatedStrList)) ;
+    response.getWriter().println(new Gson().toJson(userComment));
   }
 
   @Override
@@ -74,9 +86,13 @@ public class DataServlet extends HttpServlet {
         msglist.add(inputMsg);
     }
 
-    // Create an entity with received comment message
+    // Create an entity with received comment message and user email
     Entity commentEntity = new Entity("Comment");
+    UserService userService = UserServiceFactory.getUserService();      
+    String userEmail = userService.getCurrentUser().getEmail();
     commentEntity.setProperty("content", inputMsg);
+    commentEntity.setProperty("userEmail", userEmail);
+
 
     // Used Datastore survice to store newly created comment entity
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

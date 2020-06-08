@@ -23,6 +23,8 @@
         "Talk is Cheap; Show me the CODE."<br>
         Dream; Love; Win.
       </p>
+      <button onclick="getUserLogInStatus()">I want to leave a comments!</button> 
+      <div id="userInfo-container"></div>
       <div id="form-blk" style="display:none;">
         <form action="/data" method="POST">
             <textarea name="comment-input">Leave your comments here!</textarea>
@@ -38,8 +40,6 @@
       <br></br>
       <button onclick="deleteAllComments()">Delete all comments!</button> 
       <br></br>
-      <button onclick="getUserLogInStatus()">Show me the user log in status!</button> 
-      <div id="userInfo-container"></div>
       <p>These are the projects I have worked on:</p>
         <ul class="links">
     	  <li><a href="https://github.com/ZhiGroup/pytorch_ehr">EHR_Pytorch</a></li> 

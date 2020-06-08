@@ -47,7 +47,6 @@ public class UserLogInServelet extends HttpServlet {
       String userEmail = userService.getCurrentUser().getEmail();
       String urlToRedirectToAfterUserLogsOut = "/";
       String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
-      System.out.println(userService.getCurrentUser());
       userInfo.put("status", 1);
       userInfo.put("email", userEmail);
       userInfo.put("logoutUrl", logoutUrl);
@@ -60,28 +59,27 @@ public class UserLogInServelet extends HttpServlet {
     response.getWriter().println(new Gson().toJson(userInfo));
   }
 
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+//   @Override
+//   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+//     UserService userService = UserServiceFactory.getUserService();
 
-    UserService userService = UserServiceFactory.getUserService();
+//     // Only logged-in users can post messages
+//     if (!userService.isUserLoggedIn()) {
+//       response.sendRedirect("/userLogIn");
+//       return;
+//     }
 
-    // Only logged-in users can post messages
-    if (!userService.isUserLoggedIn()) {
-      response.sendRedirect("/userLogIn");
-      return;
-    }
+//     String text = request.getParameter("text");
+//     String email = userService.getCurrentUser().getEmail();
 
-    String text = request.getParameter("text");
-    String email = userService.getCurrentUser().getEmail();
+//     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+//     Entity messageEntity = new Entity("Message");
+//     messageEntity.setProperty("text", text);
+//     messageEntity.setProperty("timestamp", System.currentTimeMillis());
+//     datastore.put(messageEntity);
 
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity messageEntity = new Entity("Message");
-    messageEntity.setProperty("text", text);
-    messageEntity.setProperty("timestamp", System.currentTimeMillis());
-    datastore.put(messageEntity);
-
-    // Redirect to /userLogIn. The request will be routed to the doGet() function above.
-    response.sendRedirect("/userLogIn");
-  }
+//     // Redirect to /userLogIn. The request will be routed to the doGet() function above.
+//     response.sendRedirect("/userLogIn");
+//   }
 
 }

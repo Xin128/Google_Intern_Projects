@@ -56,10 +56,13 @@ function getUserLogInStatus() {
     .then((quote) => {
       if (quote.status == 1) {
           document.getElementById("form-blk").style.display = "block";
-          document.getElementById("userInfo-container").innerHTML = "<p> Hello" + quote.email + "</p> <p>Logout <a href=\"" + quote.logoutUrl + "\">here</a>.</p>"
+          document.getElementById("userInfo-container").innerHTML = 
+              "<p> Hello " + quote.email + "! <br> You have already logged in. </p> <p>Logout <a href=\"" 
+              + quote.logoutUrl + "\">here</a>.</p>"
       } else {
           document.getElementById("form-blk").style.display = "none";
-          document.getElementById("userInfo-container").innerHTML = "<p> Hello Stranger</p> <p>Login <a href=\"" + quote.loginUrl + "\">here</a>.</p>"
+          document.getElementById("userInfo-container").innerHTML = 
+            "<p> Hello Stranger</p> <p>Please <a href=\"" + quote.loginUrl + "\">login</a> first.</p>"
       }
     });
 
