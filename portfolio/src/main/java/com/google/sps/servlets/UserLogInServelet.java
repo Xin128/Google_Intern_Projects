@@ -27,7 +27,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 import java.util.HashMap;
 
 /**
@@ -36,7 +35,7 @@ import java.util.HashMap;
   */
 @WebServlet("/userLogIn")
 public class UserLogInServelet extends HttpServlet {
-  Map<String,Object> userInfo = new HashMap<String, Object>();
+  HashMap<String,Object> userInfo = new HashMap<String, Object>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

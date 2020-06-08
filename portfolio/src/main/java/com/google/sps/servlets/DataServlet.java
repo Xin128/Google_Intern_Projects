@@ -20,8 +20,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Map;
 import java.util.HashMap;
 
 /**
@@ -60,7 +59,6 @@ public class DataServlet extends HttpServlet {
     
     // Create the query and prepared query to load comment entities from database
     Query query = new Query(COMMENT).addSort(TIMESTAMP_PROPERTY, SortDirection.DESCENDING);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
@@ -100,11 +98,9 @@ public class DataServlet extends HttpServlet {
       commentEntity.setProperty(TIMESTAMP_PROPERTY,timestamp);
       commentEntity.setProperty(USEREMAIL_PROPERTY, userEmail);
 
-
     // Used Datastore survice to store newly created comment entity
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
-
     }
     // Redirect back to the current page
     response.sendRedirect("/index.html");

@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const DEFAULT_MAX_COMMENT_NUM=1
+const DEFAULT_MAX_COMMENT_NUM = 1
+const DISPLAY = "block";
+const HIDE = "none";
 
 /**
  * Adds a random description to the page.
@@ -31,12 +33,7 @@ function addRandomDescription() {
 
 function getCommentInForm() {
   inputVal = document.getElementById("quantity").value;
-  var numComments;
-  if (inputVal != '') { 
-      numComments = inputVal;
-  } else {
-      numComments = DEFAULT_MAX_COMMENT_NUM;
-  }
+  var numComments = (inputVal != '') ? inputVal : DEFAULT_MAX_COMMENT_NUM;
   var url = "/data?numComment=" + numComments;
   fetch(url).then(response => response.text()).then((quote) => {
     document.getElementById('comment-container').innerText = quote;
@@ -55,16 +52,16 @@ function deleteAllComments() {
 function getUserLogInStatus() {
   fetch("/userLogIn")
     .then((response) =>response.json())
-    .then((quote) => {
-      if (quote.status == 1) {
-          document.getElementById("form-blk").style.display = "block";
+    .then((loginfo) => {
+      if (loginfo.status == 1) {
+          document.getElementById("form-blk").style.display = DISPLAY;
           document.getElementById("userInfo-container").innerHTML = 
-              "<p> Hello " + quote.email + "! <br> You have already logged in. </p> <p>Logout <a href=\"" 
-              + quote.logoutUrl + "\">here</a>.</p>"
+              "<p> Hello " + loginfo.email + "! <br> You have already logged in. </p> <p>Logout <a href=\"" 
+              + loginfo.logoutUrl + "\">here</a>.</p>"
       } else {
-          document.getElementById("form-blk").style.display = "none";
+          document.getElementById("form-blk").style.display = HIDE;
           document.getElementById("userInfo-container").innerHTML = 
-            "<p> Hello Stranger</p> <p>Please <a href=\"" + quote.loginUrl + "\">login</a> first.</p>"
+            "<p> Hello Stranger</p> <p>Please <a href=\"" + loginfo.loginUrl + "\">login</a> first.</p>"
       }
     });
 
