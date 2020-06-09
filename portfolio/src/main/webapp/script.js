@@ -73,15 +73,16 @@ function getUserLogInStatus() {
 function drawChart() {
   const data = new google.visualization.DataTable();
   data.addColumn('string', 'Country');
-  data.addColumn('number', 'Years I stay');
+  data.addColumn('number', 'Days I have stayed');
         data.addRows([
-          ['China', 16],
-          ['Germany', 2],
-          ['United States', 2],
-          ['France', 2],
-          ['Italy', 2],
-          ['Australia', 2],
-          ['Korea', 5]
+          ['China', 5475],
+          ['Germany', 20],
+          ['United States', 930],
+          ['England', 3],
+          ['France', 5],
+          ['Italy', 5],
+          ['Australia', 10],
+          ['Korea', 50]
         ]);
 
   const options = {
