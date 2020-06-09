@@ -69,8 +69,6 @@ public class DataServlet extends HttpServlet {
         String commentUser = (String) commentEntity.getProperty(USEREMAIL_PROPERTY);
         ArrayList<String> msglist = userComment.get(commentUser);
         if (msglist == null) {
-            // msglist = new ArrayList<String>();
-            // msglist.add(commentMsg);
             userComment.put(commentUser, new ArrayList<String>(Arrays.asList(commentMsg)));
         } else {
             msglist.add(commentMsg);
