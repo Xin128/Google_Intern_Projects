@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -63,14 +64,14 @@ public class DataServlet extends HttpServlet {
 
     // Add limited number of comment contents and user email to the userComment Map  
     HashMap<String, ArrayList<String>> userComment = new HashMap<String, ArrayList<String>>();
-    for (Entity commentEntity:results.asList(FetchOptions.Builder.withLimit(maxNumComments))) {
-        String commentMsg = (String)commentEntity.getProperty(CONTENT_PROPERTY);
-        String commentUser= (String)commentEntity.getProperty(USEREMAIL_PROPERTY);
+    for (Entity commentEntity : results.asList(FetchOptions.Builder.withLimit(maxNumComments))) {
+        String commentMsg = (String) commentEntity.getProperty(CONTENT_PROPERTY);
+        String commentUser = (String) commentEntity.getProperty(USEREMAIL_PROPERTY);
         ArrayList<String> msglist = userComment.get(commentUser);
         if (msglist == null) {
-            msglist = new ArrayList<String>();
-            msglist.add(commentMsg);
-            userComment.put(commentUser, msglist);
+            // msglist = new ArrayList<String>();
+            // msglist.add(commentMsg);
+            userComment.put(commentUser, new ArrayList<String>(Arrays.asList(commentMsg)));
         } else {
             msglist.add(commentMsg);
         }

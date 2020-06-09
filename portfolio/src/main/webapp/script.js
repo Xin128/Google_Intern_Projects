@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const DEFAULT_MAX_COMMENT_NUM = 1
+const DEFAULT_MAX_COMMENT_NUM = 1;
+const LOGGED_IN = 1;
 const DISPLAY = "block";
 const HIDE = "none";
 
@@ -47,13 +48,14 @@ function deleteAllComments() {
 
 /**
  * The function is to fetch a Promise from "/userLogIn" page, convert the logIn status message
- * into text and add them into the fetch-container displayed on the webpage.
+ * into text and add them into the fetch-container displayed on the webpage. 
+ * Note: when user has already logged in, his loginfo status is 1; otherwise 0;
  */
 function getUserLogInStatus() {
   fetch("/userLogIn")
     .then((response) =>response.json())
     .then((loginfo) => {
-      if (loginfo.status == 1) {
+      if (loginfo.status == LOGGED_IN) {
           document.getElementById("form-blk").style.display = DISPLAY;
           document.getElementById("userInfo-container").innerHTML = 
               "<p> Hello " + loginfo.email + "! <br> You have already logged in. </p> <p>Logout <a href=\"" 
