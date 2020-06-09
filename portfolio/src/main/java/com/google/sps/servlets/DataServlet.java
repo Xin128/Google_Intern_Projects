@@ -39,12 +39,13 @@ import java.util.ArrayList;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   private final String BLOB_URL = "blob_upload_url";
+  protected static final String BLOB_URL_PROPERTY = "blob_url";
   protected static final String COMMENT = "Comment";
-  private final String CONTENT_PROPERTY = "content";
+  protected static final String CONTENT_PROPERTY = "content";
   private final int DEFAULT_MAX_COMMENT_NUM = 1;
   private final String INPUT_MSG_FORM = "comment-input";
   private final String NUM_COMMENT_FORM = "numComment";
-  private final String TIMESTAMP_PROPERTY = "timestamp";
+  protected static final String TIMESTAMP_PROPERTY = "timestamp";
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -83,24 +84,25 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Get the input from the form.
-    String inputMsg = request.getParameter(INPUT_MSG_FORM);
-    if (inputMsg == null) {
-        return; 
-    }
+    // // Get the input from the form.
+    // String inputMsg = request.getParameter(INPUT_MSG_FORM);
+    // if (inputMsg == null) {
+    //     return; 
+    // }
     
-    if (!inputMsg.isEmpty()) {
-      // Create an entity with received comment message
-      long timestamp = System.currentTimeMillis();
-      Entity commentEntity = new Entity(COMMENT);
-      commentEntity.setProperty(CONTENT_PROPERTY, inputMsg);
-      commentEntity.setProperty(TIMESTAMP_PROPERTY,timestamp);
+    // if (!inputMsg.isEmpty()) {
+    //   // Create an entity with received comment message
+    //   long timestamp = System.currentTimeMillis();
+    //   Entity commentEntity = new Entity(COMMENT);
+    //   commentEntity.setProperty(CONTENT_PROPERTY, inputMsg);
+    //   commentEntity.setProperty(TIMESTAMP_PROPERTY,timestamp);
+    // //   commentEntity.setProperty(BLOB_URL_PROPERTY, )
 
-      // Used Datastore survice to store newly created comment entity
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      datastore.put(commentEntity);
-    }
-    // Redirect back to the current page
+    //   // Used Datastore survice to store newly created comment entity
+    //   DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    //   datastore.put(commentEntity);
+    // }
+    // // Redirect back to the current page
     response.sendRedirect("/index.html");
   }
 

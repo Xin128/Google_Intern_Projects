@@ -19,6 +19,9 @@ import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
@@ -40,7 +43,10 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet("/my-form-handler")
 public class FormHandlerServlet extends HttpServlet {
-
+  String BLOB_URL_PROPERTY = DataServlet.BLOB_URL_PROPERTY;
+  String COMMENT = DataServlet.COMMENT;
+  String CONTENT_PROPERTY = DataServlet.CONTENT_PROPERTY;
+  String TIMESTAMP_PROPERTY = DataServlet.TIMESTAMP_PROPERTY;
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -49,6 +55,19 @@ public class FormHandlerServlet extends HttpServlet {
 
     // Get the URL of the image that the user uploaded to Blobstore.
     String imageUrl = getUploadedFileUrl(request, "image");
+  
+    // Create an entity with received comment message
+    long timestamp = System.currentTimeMillis();
+    Entity commentEntity = new Entity(COMMENT);
+    commentEntity.setProperty(CONTENT_PROPERTY, message);
+    commentEntity.setProperty(TIMESTAMP_PROPERTY,timestamp);
+    commentEntity.setProperty(BLOB_URL_PROPERTY, imageUrl);
+
+    // Used Datastore survice to store newly created comment entity
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(commentEntity);
+
+
 
     // Output some HTML that shows the data the user entered.
     // A real codebase would probably store these in Datastore.
