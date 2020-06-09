@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -36,6 +38,7 @@ import java.util.ArrayList;
   */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+  private final String BLOB_URL = "blob_upload_url";
   protected static final String COMMENT = "Comment";
   private final String CONTENT_PROPERTY = "content";
   private final int DEFAULT_MAX_COMMENT_NUM = 1;
@@ -43,9 +46,17 @@ public class DataServlet extends HttpServlet {
   private final String NUM_COMMENT_FORM = "numComment";
   private final String TIMESTAMP_PROPERTY = "timestamp";
 
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String requestedBlobComment = request.getParameter(BLOB_URL);
+    if (requestedBlobComment != null) {
+        BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+        String uploadUrl = blobstoreService.createUploadUrl("/my-form-handler");
+        response.setContentType("text/html");
+        response.getWriter().println(uploadUrl);
+        return;
+    }
+
     // Get the limiting number of comments
     String requestedNumComment = request.getParameter(NUM_COMMENT_FORM);
     if (requestedNumComment == null) {

@@ -47,3 +47,16 @@ function deleteAllComments() {
   const params = new URLSearchParams();
   fetch("/delete-data", { method: "POST", body: params });
 }
+
+function fetchBlobstoreUrlAndShowForm() {
+  const messageForm = document.getElementById('my-form');
+  var url = "/data?blob_upload_url=" + messageForm;
+  fetch(url)
+      .then((response) => {
+        return response.text();
+      })
+      .then((imageUploadUrl) => {
+        messageForm.action = imageUploadUrl;
+        messageForm.classList.remove('hidden');
+      });
+}

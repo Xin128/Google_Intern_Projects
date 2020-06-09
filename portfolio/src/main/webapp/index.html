@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body>
+  <body onload="fetchBlobstoreUrlAndShowForm()">
     <div id="content">
       <h1>Xin Hao</h1>
       <p>Code a Hello World.</p>
@@ -23,9 +23,12 @@
         "Talk is Cheap; Show me the CODE."<br>
         Dream; Love; Win.
       </p>
-      <form action="/data" method="POST">
+      <!-- <form action="/data" method="POST" enctype="multipart/form-data">-->
+      <form id="my-form" method="POST" class="hidden" enctype="multipart/form-data">
         <textarea name="comment-input">Leave your comments here!</textarea>
-        <br/><br/>
+        <br/>
+        <p>Upload an image here:</p>
+        <input type="file" name="image">
         <input type="submit" />
       </form>
       <br></br>   
