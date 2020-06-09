@@ -13,9 +13,9 @@
 // limitations under the License.
 
 const DEFAULT_MAX_COMMENT_NUM = 1;
-const LOGGED_IN = 1;
 const DISPLAY = "block";
 const HIDE = "none";
+const LOGGED_IN = 1;
 
 /**
  * Adds a random description to the page.
