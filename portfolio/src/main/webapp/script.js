@@ -68,7 +68,6 @@ function getUserLogInStatus() {
     });
 }
 
-
 /** Creates a chart and adds it to the page. */
 function drawChart() {
   const data = new google.visualization.DataTable();
@@ -82,11 +81,11 @@ function drawChart() {
           ['France', 5],
           ['Italy', 5],
           ['Australia', 10],
-          ['Korea', 50]
+          ['South Korea', 50]
         ]);
 
   const options = {
-    'title': 'Countries I have been to',
+    'title': 'Countries I have stayed',
     'width':500,
     'height':400
   };
