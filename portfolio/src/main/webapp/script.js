@@ -38,9 +38,16 @@ function getCommentInForm() {
       numComments = DEFAULT_MAX_COMMENT_NUM;
   }
   var url = "/data?numComment=" + numComments;
-  fetch(url).then(response => response.text()).then((quote) => {
-    document.getElementById('comment-container').innerText = quote;
-  });
+  var commentContainer = document.getElementById('comment-container');
+  fetch(url).then(response => response.json()).
+    then((commentArray) => commentArray.forEach(comment => {
+        fetch(comment[1]).then(response => response.blob()).then((bloburl) => {
+            var objectURL = URL.createObjectURL(bloburl);
+            var imgElem = document.createElement('img');
+            imgElem.src = objectURL;
+            commentContainer.append(imgElem);
+        })
+  }));
 }
 
 function deleteAllComments() {

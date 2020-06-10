@@ -67,8 +67,6 @@ public class FormHandlerServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
 
-
-
     // Output some HTML that shows the data the user entered.
     // A real codebase would probably store these in Datastore.
     PrintWriter out = response.getWriter();
@@ -77,7 +75,10 @@ public class FormHandlerServlet extends HttpServlet {
     out.println("<img src=\"" + imageUrl + "\" />");
     out.println("</a>");
     out.println("<p>Here's the text you entered:</p>");
-    out.println(message);
+    out.println(message);    
+    
+    // // Redirect back to the current page
+    // response.sendRedirect("/index.html");
   }
 
   /** Returns a URL that points to the uploaded file, or null if the user didn't upload a file. */

@@ -29,6 +29,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.ArrayList;
 
 
@@ -72,10 +73,11 @@ public class DataServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     
     // Add limited number comment contents to the msglist  
-    ArrayList<String> msglist = new ArrayList<String>();
+    ArrayList<ArrayList<String>> msglist = new ArrayList<ArrayList<String>>();
     for (Entity commentEntity:results.asList(FetchOptions.Builder.withLimit(maxNumComments))) {
-      String commentMsg = (String)commentEntity.getProperty(CONTENT_PROPERTY);
-      msglist.add(commentMsg);
+      String commentMsg = (String) commentEntity.getProperty(CONTENT_PROPERTY);
+      String imageUrl = (String) commentEntity.getProperty(BLOB_URL_PROPERTY);
+      msglist.add(new ArrayList<String>(Arrays.asList(commentMsg,imageUrl)));
     }
 
     response.setContentType("application/json;");
@@ -84,25 +86,6 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // // Get the input from the form.
-    // String inputMsg = request.getParameter(INPUT_MSG_FORM);
-    // if (inputMsg == null) {
-    //     return; 
-    // }
-    
-    // if (!inputMsg.isEmpty()) {
-    //   // Create an entity with received comment message
-    //   long timestamp = System.currentTimeMillis();
-    //   Entity commentEntity = new Entity(COMMENT);
-    //   commentEntity.setProperty(CONTENT_PROPERTY, inputMsg);
-    //   commentEntity.setProperty(TIMESTAMP_PROPERTY,timestamp);
-    // //   commentEntity.setProperty(BLOB_URL_PROPERTY, )
-
-    //   // Used Datastore survice to store newly created comment entity
-    //   DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    //   datastore.put(commentEntity);
-    // }
-    // // Redirect back to the current page
     response.sendRedirect("/index.html");
   }
 
