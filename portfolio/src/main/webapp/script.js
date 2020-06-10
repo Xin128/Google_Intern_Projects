@@ -17,6 +17,8 @@ const DISPLAY = "block";
 const HIDE = "none";
 const LOGGED_IN = 1;
 
+google.charts.load("current", {"packages": ["geochart"]});
+google.charts.setOnLoadCallback(drawChart);
 /**
  * Adds a random description to the page.
  */
@@ -66,5 +68,31 @@ function getUserLogInStatus() {
             "<p> Hello Stranger</p> <p>Please <a href=\"" + loginfo.loginUrl + "\">login</a> first.</p>"
       }
     });
+}
 
+/** Creates a chart and adds it to the page. */
+function drawChart() {
+  const data = new google.visualization.DataTable();
+  data.addColumn('string', 'Country');
+  data.addColumn('number', 'Days I have stayed');
+        data.addRows([
+          ['China', 5475],
+          ['Germany', 20],
+          ['United States', 930],
+          ['England', 3],
+          ['France', 5],
+          ['Italy', 5],
+          ['Australia', 10],
+          ['South Korea', 50]
+        ]);
+
+  const options = {
+    'title': 'Countries I have stayed',
+    'width':500,
+    'height':400
+  };
+
+  const chart = new google.visualization.GeoChart(
+      document.getElementById('chart-container'));
+  chart.draw(data,options);
 }
