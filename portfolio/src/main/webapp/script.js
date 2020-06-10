@@ -16,7 +16,7 @@ const DEFAULT_MAX_COMMENT_NUM = 1
 const DISPLAY = "block";
 const HIDE = "none";
 
-google.charts.load("current", {"packages":["geochart"]});
+google.charts.load("current", {"packages": ["geochart"]});
 google.charts.setOnLoadCallback(drawChart);
 /**
  * Adds a random description to the page.
