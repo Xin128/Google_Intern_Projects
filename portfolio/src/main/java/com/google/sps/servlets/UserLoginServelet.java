@@ -34,8 +34,9 @@ import java.util.HashMap;
   * Note: We first added the Gson library dependency to pom.xml.
   */
 @WebServlet("/userLogIn")
-public class UserLogInServelet extends HttpServlet {
+public class UserLoginServelet extends HttpServlet {
   HashMap<String, Object> userInfo = new HashMap<String, Object>();
+  final private String redirectStr = "/";
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -43,14 +44,12 @@ public class UserLogInServelet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
       String userEmail = userService.getCurrentUser().getEmail();
-      String urlToRedirectToAfterUserLogsOut = "/";
-      String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
+      String logoutUrl = userService.createLogoutURL(redirectStr);
       userInfo.put("status", 1);
       userInfo.put("email", userEmail);
       userInfo.put("logoutUrl", logoutUrl);
     } else {
-      String urlToRedirectToAfterUserLogsIn = "/";
-      String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
+      String loginUrl = userService.createLoginURL(redirectStr);
       userInfo.put("status", 0);
       userInfo.put("loginUrl",loginUrl);
     }
