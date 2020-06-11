@@ -45,14 +45,21 @@ function getCommentInForm() {
    */
   var commentContainer = document.getElementById('comment-container');
   fetch(url).then(response => response.json()).then((commentMap) => { 
-    Object.values(commentMap).forEach(commentEntity => commentEntity.forEach(commentUser => {
-      fetch(commentUser[1]).then(blobResponse => blobResponse.blob()).then((bloburl) => {
+    Object.entries(commentMap).forEach(([commentUser,commentEntity]) => {
+      var userEmail = document.createTextNode(commentUser);
+      commentContainer.append(userEmail.concat(": "));
+      commentEntity.forEach(commentContent => {
+      var comemntMsg = document.createTextNode(commentContent[0]);
+      commentContainer.append(comemntMsg);
+      fetch(commentContent[1]).then(blobResponse => blobResponse.blob()).then((bloburl) => {
         var objectURL = URL.createObjectURL(bloburl);
         var imgElem = document.createElement('img');
         imgElem.src = objectURL;
         commentContainer.append(imgElem);
-      })
-    }))}); 
+      });
+    });
+    })
+  }); 
 };
 
 // delete all the comments from Datastore
