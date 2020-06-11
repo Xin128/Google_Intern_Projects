@@ -40,19 +40,20 @@ function getCommentInForm() {
   var numComments = (inputVal != '') ? inputVal : DEFAULT_MAX_COMMENT_NUM;
   var url = "/data?numComment=" + numComments;
 
-  // fetch from remote blobstore url with image
+  /* fetch from data url, then fetch from remote blobstore url with image and display it on the webpage
+   * Note: commeentMap data structure: {userEmail: [[userComment1, userCommentImage1],[userComment2, userCommentImage2] ]}
+   */
   var commentContainer = document.getElementById('comment-container');
   fetch(url).then(response => response.json()).then((commentMap) => { 
-    Object.values(commentMap).forEach(commentUser => {
+    Object.values(commentMap).forEach(commentEntity => commentEntity.forEach(commentUser => {
       fetch(commentUser[1]).then(blobResponse => blobResponse.blob()).then((bloburl) => {
         var objectURL = URL.createObjectURL(bloburl);
         var imgElem = document.createElement('img');
         imgElem.src = objectURL;
         commentContainer.append(imgElem);
       })
-    })
-  }); 
-}
+    }))}); 
+};
 
 // delete all the comments from Datastore
 function deleteAllComments() {

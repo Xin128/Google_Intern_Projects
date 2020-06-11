@@ -50,7 +50,7 @@ public class DataServlet extends HttpServlet {
   private final String DEFAULT_USERNAME = "defaultUser";
   private final String INPUT_MSG_FORM = "comment-input";
   private final String NUM_COMMENT_FORM = "numComment";
-  private final String TIMESTAMP_PROPERTY = "timestamp";
+  protected static final String TIMESTAMP_PROPERTY = "timestamp";
   private final String USEREMAIL_PROPERTY = "userEmail";
 
 
@@ -79,8 +79,11 @@ public class DataServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    // Add limited number of comment contents and user email to the userComment Map  
-    HashMap<String, ArrayList<String>> userComment = new HashMap<String, ArrayList<String>>();
+    /* Add limited number of comment contents and user email to the userComment Map  
+     * Note: commeentMap data structure: 
+     * {userEmail: [[userComment1, userCommentImage1],[userComment2, userCommentImage2]...]}
+     */
+    HashMap<String, ArrayList<ArrayList<String>>> userComment = new HashMap<String, ArrayList<ArrayList<String>>>();
     for (Entity commentEntity : results.asList(FetchOptions.Builder.withLimit(maxNumComments))) {
         String commentMsg = (String) commentEntity.getProperty(CONTENT_PROPERTY);
         String commentUser = (String) commentEntity.getProperty(USEREMAIL_PROPERTY);
@@ -88,11 +91,12 @@ public class DataServlet extends HttpServlet {
             commentUser = DEFAULT_USERNAME;
         }
         String imageUrl = (String) commentEntity.getProperty(BLOB_URL_PROPERTY);
-        ArrayList<String> msglist = userComment.get(commentUser);
+        ArrayList<ArrayList<String>> msglist = userComment.get(commentUser);
         if (msglist == null) {
-            userComment.put(commentUser, new ArrayList<String>(Arrays.asList(commentMsg,imageUrl)));
+            ArrayList<String> firstComment = new ArrayList<String>(Arrays.asList(commentMsg,imageUrl));
+            userComment.put(commentUser, new ArrayList<ArrayList<String>>(Arrays.asList(firstComment)));
         } else {
-            msglist.add(commentMsg);
+            msglist.add(new ArrayList<String>(Arrays.asList(commentMsg,imageUrl)));
         }
     }
     response.setContentType("application/json;");
