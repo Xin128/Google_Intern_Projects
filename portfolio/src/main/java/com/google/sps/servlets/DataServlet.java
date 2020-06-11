@@ -47,11 +47,13 @@ public class DataServlet extends HttpServlet {
   protected static final String COMMENT = "Comment";
   protected static final String CONTENT_PROPERTY = "content";
   private final int DEFAULT_MAX_COMMENT_NUM = 1;
+  private final String DEFAULT_USERNAME = "defaultUser";
   private final String INPUT_MSG_FORM = "comment-input";
   private final String NUM_COMMENT_FORM = "numComment";
-  protected static final String TIMESTAMP_PROPERTY = "timestamp";
+  private final String TIMESTAMP_PROPERTY = "timestamp";
   private final String USEREMAIL_PROPERTY = "userEmail";
-  private final String DEFAULT_USERNAME = "defaultUser";
+
+
 
 
   @Override
@@ -99,7 +101,6 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
     // Redirect back to the current page
     response.sendRedirect("/index.html");
   }
