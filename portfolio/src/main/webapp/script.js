@@ -12,8 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const DEFAULT_MAX_COMMENT_NUM=1
+const DEFAULT_MAX_COMMENT_NUM = 1;
+const DISPLAY = "block";
+const HIDE = "none";
+const LOGGED_IN = 1;
 
+google.charts.load("current", {"packages": ["geochart"]});
+google.charts.setOnLoadCallback(drawChart);
 /**
  * Adds a random description to the page.
  */
@@ -30,40 +35,88 @@ function addRandomDescription() {
 }
 
 function getCommentInForm() {
+  // get number of limited comments from input form
   inputVal = document.getElementById("quantity").value;
-  var numComments;
-  if (inputVal != '') { 
-      numComments = inputVal;
-  } else {
-      numComments = DEFAULT_MAX_COMMENT_NUM;
-  }
+  var numComments = (inputVal != '') ? inputVal : DEFAULT_MAX_COMMENT_NUM;
   var url = "/data?numComment=" + numComments;
+
+  // fetch from remote blobstore url with image
   var commentContainer = document.getElementById('comment-container');
-  fetch(url).then(response => response.json()).
-    then((commentArray) => commentArray.forEach(comment => {
-        fetch(comment[1]).then(response => response.blob()).then((bloburl) => {
-            var objectURL = URL.createObjectURL(bloburl);
-            var imgElem = document.createElement('img');
-            imgElem.src = objectURL;
-            commentContainer.append(imgElem);
-        })
-  }));
+  fetch(url).then(response => response.json()).then((commentMap) => { 
+    Object.values(commentMap).forEach(commentUser => {
+      fetch(commentUser[1]).then(blobResponse => blobResponse.blob()).then((bloburl) => {
+        var objectURL = URL.createObjectURL(bloburl);
+        var imgElem = document.createElement('img');
+        imgElem.src = objectURL;
+        commentContainer.append(imgElem);
+      })
+    })
+  }); 
 }
 
+// delete all the comments from Datastore
 function deleteAllComments() {
   const params = new URLSearchParams();
   fetch("/delete-data", { method: "POST", body: params });
 }
 
+// fetch the url of image blobstore and show the form to upload files
 function fetchBlobstoreUrlAndShowForm() {
   const messageForm = document.getElementById('my-form');
   var url = "/data?blob_upload_url=" + messageForm;
-  fetch(url)
-      .then((response) => {
-        return response.text();
-      })
+  fetch(url).then((response) => response.text())
       .then((imageUploadUrl) => {
         messageForm.action = imageUploadUrl;
         messageForm.classList.remove('hidden');
       });
 }
+
+/**
+ * The function is to fetch a Promise from "/userLogIn" page, convert the logIn status message
+ * into text and add them into the fetch-container displayed on the webpage. 
+ * Note: when user has already logged in, his loginfo status is 1; otherwise 0;
+ */
+function getUserLogInStatus() {
+  fetch("/userLogIn")
+    .then((response) =>response.json())
+    .then((loginfo) => {
+      if (loginfo.status == LOGGED_IN) {
+          document.getElementById("form-blk").style.display = DISPLAY;
+          document.getElementById("userInfo-container").innerHTML = 
+              "<p> Hello " + loginfo.email + "! <br> You have already logged in. </p> <p>Logout <a href=\"" 
+              + loginfo.logoutUrl + "\">here</a>.</p>"
+      } else {
+          document.getElementById("form-blk").style.display = HIDE;
+          document.getElementById("userInfo-container").innerHTML = 
+            "<p> Hello Stranger</p> <p>Please <a href=\"" + loginfo.loginUrl + "\">login</a> first.</p>"
+      }
+    });
+}
+
+/** Creates a chart and adds it to the page. */
+function drawChart() {
+  const data = new google.visualization.DataTable();
+  data.addColumn('string', 'Country');
+  data.addColumn('number', 'Days I have stayed');
+        data.addRows([
+          ['China', 5475],
+          ['Germany', 20],
+          ['United States', 930],
+          ['England', 3],
+          ['France', 5],
+          ['Italy', 5],
+          ['Australia', 10],
+          ['South Korea', 50]
+        ]);
+
+  const options = {
+    'title': 'Countries I have stayed',
+    'width':500,
+    'height':400
+  };
+
+  const chart = new google.visualization.GeoChart(
+      document.getElementById('chart-container'));
+  chart.draw(data,options);
+}
+
