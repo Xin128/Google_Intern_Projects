@@ -49,7 +49,6 @@ public class FormHandlerServlet extends HttpServlet {
   String TIMESTAMP_PROPERTY = DataServlet.TIMESTAMP_PROPERTY;
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
     // Get the message entered by the user.
     String message = request.getParameter("comment-input");
 
@@ -66,19 +65,9 @@ public class FormHandlerServlet extends HttpServlet {
     // Used Datastore survice to store newly created comment entity
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
-
-    // Output some HTML that shows the data the user entered.
-    // A real codebase would probably store these in Datastore.
-    PrintWriter out = response.getWriter();
-    out.println("<p>Here's the image you uploaded:</p>");
-    out.println("<a href=\"" + imageUrl + "\">");
-    out.println("<img src=\"" + imageUrl + "\" />");
-    out.println("</a>");
-    out.println("<p>Here's the text you entered:</p>");
-    out.println(message);    
     
-    // // Redirect back to the current page
-    // response.sendRedirect("/index.html");
+    // Redirect back to the current page
+    response.sendRedirect("/index.html");
   }
 
   /** Returns a URL that points to the uploaded file, or null if the user didn't upload a file. */
@@ -101,9 +90,6 @@ public class FormHandlerServlet extends HttpServlet {
       blobstoreService.delete(blobKey);
       return null;
     }
-
-    // We could check the validity of the file here, e.g. to make sure it's an image file
-    // https://stackoverflow.com/q/10779564/873165
 
     // Use ImagesService to get a URL that points to the uploaded file.
     ImagesService imagesService = ImagesServiceFactory.getImagesService();

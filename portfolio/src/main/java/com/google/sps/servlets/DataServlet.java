@@ -42,29 +42,28 @@ import java.util.HashMap;
   */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  private final String BLOB_URL = "blob_upload_url";
   protected static final String BLOB_URL_PROPERTY = "blob_url";
   protected static final String COMMENT = "Comment";
   protected static final String CONTENT_PROPERTY = "content";
+  protected static final String TIMESTAMP_PROPERTY = "timestamp";
+  private final String BLOB_URL = "blob_upload_url";
   private final int DEFAULT_MAX_COMMENT_NUM = 1;
   private final String DEFAULT_USERNAME = "defaultUser";
   private final String INPUT_MSG_FORM = "comment-input";
   private final String NUM_COMMENT_FORM = "numComment";
-  protected static final String TIMESTAMP_PROPERTY = "timestamp";
   private final String USEREMAIL_PROPERTY = "userEmail";
-
-
 
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Process the Blob URL
     String requestedBlobComment = request.getParameter(BLOB_URL);
     if (requestedBlobComment != null) {
-        BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-        String uploadUrl = blobstoreService.createUploadUrl("/my-form-handler");
-        response.setContentType("text/html");
-        response.getWriter().println(uploadUrl);
-        return;
+      BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+      String uploadUrl = blobstoreService.createUploadUrl("/my-form-handler");
+      response.setContentType("text/html");
+      response.getWriter().println(uploadUrl);
+      return;
     }
 
     // Get the limiting number of comments
@@ -85,28 +84,23 @@ public class DataServlet extends HttpServlet {
      */
     HashMap<String, ArrayList<ArrayList<String>>> userComment = new HashMap<String, ArrayList<ArrayList<String>>>();
     for (Entity commentEntity : results.asList(FetchOptions.Builder.withLimit(maxNumComments))) {
-        String commentMsg = (String) commentEntity.getProperty(CONTENT_PROPERTY);
-        String commentUser = (String) commentEntity.getProperty(USEREMAIL_PROPERTY);
-        if (commentUser == null) {
-            commentUser = DEFAULT_USERNAME;
-        }
-        String imageUrl = (String) commentEntity.getProperty(BLOB_URL_PROPERTY);
-        ArrayList<ArrayList<String>> msglist = userComment.get(commentUser);
-        if (msglist == null) {
-            ArrayList<String> firstComment = new ArrayList<String>(Arrays.asList(commentMsg,imageUrl));
-            userComment.put(commentUser, new ArrayList<ArrayList<String>>(Arrays.asList(firstComment)));
-        } else {
-            msglist.add(new ArrayList<String>(Arrays.asList(commentMsg,imageUrl)));
-        }
+      // Get the different properties (userEmail, comment message, comment image) of a comment Entity
+      String commentMsg = (String) commentEntity.getProperty(CONTENT_PROPERTY);
+      String commentUser = (String) commentEntity.getProperty(USEREMAIL_PROPERTY);
+      if (commentUser == null) {
+        commentUser = DEFAULT_USERNAME;
+      }
+      String imageUrl = (String) commentEntity.getProperty(BLOB_URL_PROPERTY);
+      ArrayList<ArrayList<String>> msglist = userComment.get(commentUser);
+      if (msglist == null) {
+        ArrayList<String> firstComment = new ArrayList<String>(Arrays.asList(commentMsg,imageUrl));
+        userComment.put(commentUser, new ArrayList<ArrayList<String>>(Arrays.asList(firstComment)));
+      } else {
+        msglist.add(new ArrayList<String>(Arrays.asList(commentMsg,imageUrl)));
+      }
     }
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(userComment));
-  }
-
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Redirect back to the current page
-    response.sendRedirect("/index.html");
   }
 
 }
