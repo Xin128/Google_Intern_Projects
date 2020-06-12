@@ -16,6 +16,7 @@ const DEFAULT_MAX_COMMENT_NUM = 1;
 const DISPLAY = "block";
 const HIDE = "none";
 const LOGGED_IN = 1;
+const linebreak = document.createElement('br');
 
 google.charts.load("current", {"packages": ["geochart"]});
 google.charts.setOnLoadCallback(drawChart);
@@ -46,18 +47,20 @@ function getCommentInForm() {
   var commentContainer = document.getElementById('comment-container');
   fetch(url).then(response => response.json()).then((commentMap) => { 
     Object.entries(commentMap).forEach(([commentUser,commentEntity]) => {
-      var userEmail = document.createTextNode(commentUser);
-      commentContainer.append(userEmail.concat(": "));
+      var userEmail = document.createTextNode(commentUser.concat(': '));
+      commentContainer.append(userEmail);
       commentEntity.forEach(commentContent => {
-      var comemntMsg = document.createTextNode(commentContent[0]);
-      commentContainer.append(comemntMsg);
-      fetch(commentContent[1]).then(blobResponse => blobResponse.blob()).then((bloburl) => {
-        var objectURL = URL.createObjectURL(bloburl);
-        var imgElem = document.createElement('img');
-        imgElem.src = objectURL;
-        commentContainer.append(imgElem);
+        var comemntMsg = document.createTextNode(commentContent[0]);
+        commentContainer.append(comemntMsg);
+        commentContainer.append(linebreak);
+        fetch(commentContent[1]).then(blobResponse => blobResponse.blob()).then((bloburl) => {
+          var objectURL = URL.createObjectURL(bloburl);
+          var imgElem = document.createElement('img');
+          imgElem.src = objectURL;
+          commentContainer.append(imgElem);
+          commentContainer.append(linebreak);
+        });
       });
-    });
     })
   }); 
 };
