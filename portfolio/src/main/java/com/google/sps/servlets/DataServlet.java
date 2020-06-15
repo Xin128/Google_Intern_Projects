@@ -14,8 +14,6 @@
 
 package com.google.sps.servlets;
 
-import com.google.appengine.api.blobstore.BlobstoreService;
-import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -23,18 +21,16 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+
 
 /**
   * Servlet that returns comments in database. 
@@ -56,20 +52,10 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Process the Blob URL
-    String requestedBlobComment = request.getParameter(BLOB_URL);
-    if (requestedBlobComment != null) {
-      BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-      String uploadUrl = blobstoreService.createUploadUrl("/my-form-handler");
-      response.setContentType("text/html");
-      response.getWriter().println(uploadUrl);
-      return;
-    }
-
     // Get the limiting number of comments
     String requestedNumComment = request.getParameter(NUM_COMMENT_FORM);
     if (requestedNumComment == null) {
-        return; 
+      return;
     }
     int maxNumComments = Integer.parseInt(requestedNumComment);
     
@@ -82,9 +68,9 @@ public class DataServlet extends HttpServlet {
      * Note: commeentMap data structure: 
      * {userEmail: [[userComment1, userCommentImage1],[userComment2, userCommentImage2]...]}
      */
-    HashMap<String, ArrayList<ArrayList<String>>> userComment = new HashMap<String, ArrayList<ArrayList<String>>>();
+    HashMap<String, ArrayList<ArrayList<String>>> userComment = new HashMap();
     for (Entity commentEntity : results.asList(FetchOptions.Builder.withLimit(maxNumComments))) {
-      // Get the different properties (userEmail, comment message, comment image) of a comment Entity
+      // Get the different properties (userEmail, message, image) of a comment Entity
       String commentMsg = (String) commentEntity.getProperty(CONTENT_PROPERTY);
       String commentUser = (String) commentEntity.getProperty(USEREMAIL_PROPERTY);
       if (commentUser == null) {

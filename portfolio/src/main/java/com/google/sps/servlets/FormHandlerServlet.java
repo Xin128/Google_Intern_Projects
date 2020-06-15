@@ -26,7 +26,6 @@ import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -43,10 +42,10 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet("/my-form-handler")
 public class FormHandlerServlet extends HttpServlet {
-  String BLOB_URL_PROPERTY = DataServlet.BLOB_URL_PROPERTY;
-  String COMMENT = DataServlet.COMMENT;
-  String CONTENT_PROPERTY = DataServlet.CONTENT_PROPERTY;
-  String TIMESTAMP_PROPERTY = DataServlet.TIMESTAMP_PROPERTY;
+  private String BLOB_URL_PROPERTY = DataServlet.BLOB_URL_PROPERTY;
+  private String COMMENT = DataServlet.COMMENT;
+  private String CONTENT_PROPERTY = DataServlet.CONTENT_PROPERTY;
+  private String TIMESTAMP_PROPERTY = DataServlet.TIMESTAMP_PROPERTY;
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the message entered by the user.
