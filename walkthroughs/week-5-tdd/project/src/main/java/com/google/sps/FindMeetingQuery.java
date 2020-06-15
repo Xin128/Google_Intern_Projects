@@ -14,10 +14,49 @@
 
 package com.google.sps;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 public final class FindMeetingQuery {
+  private ArrayList<TimeRange> remainingTime;
+
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    throw new UnsupportedOperationException("TODO: Implement this method.");
+    Collection<String> requiredAttendees = request.getAttendees();
+    long requiredDuration = request.getDuration();
+    if (requiredDuration > TimeRange.WHOLE_DAY.duration()) {
+      return new ArrayList<>();
+    }
+    remainingTime = new ArrayList<>
+                        (Collections.singletonList(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TimeRange.END_OF_DAY, true)));
+    for (Event event : events) {
+      TimeRange eventTime = event.getWhen();
+      if (!Collections.disjoint(event.getAttendees(), requiredAttendees)) {
+          splitToTwoRange(eventTime, requiredDuration);
+      }
+    }
+    return remainingTime;
+  }
+
+  private void splitToTwoRange(TimeRange occupied, long duration) {
+    Collections.sort(remainingTime, TimeRange.ORDER_BY_END);
+    int i = 0;
+    while (i < remainingTime.size()) {
+      if (remainingTime.get(i).overlaps(occupied)) {
+        TimeRange prev = TimeRange.fromStartEnd(remainingTime.get(i).start(), occupied.start(), false);
+        TimeRange after = TimeRange.fromStartEnd(occupied.end(), remainingTime.get(i).end(), false);
+        remainingTime.remove(i);
+        i -= 1;
+        if (prev.duration() >= duration) {
+          i += 1;
+          remainingTime.add(i, prev);
+        }
+        if (after.duration() >= duration) {
+          i += 1;
+          remainingTime.add(i, after);
+        }
+      }
+      i += 1;
+    }
   }
 }
