@@ -18,33 +18,54 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-public final class FindMeetingQuery {
-  private ArrayList<TimeRange> remainingTime;
 
+public final class FindMeetingQuery {
+  /**
+   * create a query to select available time slots based on request.
+   * @param events existing events for attendees to participate
+   * @param request request of meetings with specific time and attendees
+   * @return a collection of available time slots
+   */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
     Collection<String> requiredAttendees = request.getAttendees();
+    Collection<String> optionalAttendees = request.getOptionalAttendees();
     long requiredDuration = request.getDuration();
     if (requiredDuration > TimeRange.WHOLE_DAY.duration()) {
       return new ArrayList<>();
     }
-    remainingTime = new ArrayList<>
-                        (Collections.singletonList(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TimeRange.END_OF_DAY, true)));
+    ArrayList<TimeRange> requiredTime = new ArrayList<>(
+        Collections.singletonList(
+            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TimeRange.END_OF_DAY, true)
+        )
+    );
+    ArrayList<TimeRange> optionalTime = new ArrayList<>(
+        Collections.singletonList(
+            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TimeRange.END_OF_DAY, true)
+        )
+    );
     for (Event event : events) {
       TimeRange eventTime = event.getWhen();
       if (!Collections.disjoint(event.getAttendees(), requiredAttendees)) {
-          splitToTwoRange(eventTime, requiredDuration);
+        requiredTime = splitToTwoRange(eventTime, requiredDuration, requiredTime);
+      }
+      if (!Collections.disjoint(event.getAttendees(), optionalAttendees)) {
+        optionalTime = splitToTwoRange(eventTime, requiredDuration, optionalTime);
       }
     }
-    return remainingTime;
+    ArrayList<TimeRange> result = getTimeIntersection(requiredTime, optionalTime, requiredDuration);
+    return (result.isEmpty() && !requiredAttendees.isEmpty()) ? requiredTime : result;
   }
 
-  private void splitToTwoRange(TimeRange occupied, long duration) {
-    Collections.sort(remainingTime, TimeRange.ORDER_BY_END);
+  private ArrayList<TimeRange> splitToTwoRange(
+      TimeRange occupied, long duration, ArrayList<TimeRange> remainingTime) {
+    Collections.sort(remainingTime, TimeRange.ORDER_BY_START);
     int i = 0;
     while (i < remainingTime.size()) {
       if (remainingTime.get(i).overlaps(occupied)) {
-        TimeRange prev = TimeRange.fromStartEnd(remainingTime.get(i).start(), occupied.start(), false);
-        TimeRange after = TimeRange.fromStartEnd(occupied.end(), remainingTime.get(i).end(), false);
+        TimeRange prev = TimeRange.fromStartEnd(
+            remainingTime.get(i).start(), occupied.start(), false);
+        TimeRange after = TimeRange.fromStartEnd(
+            occupied.end(), remainingTime.get(i).end(), false);
         remainingTime.remove(i);
         i -= 1;
         if (prev.duration() >= duration) {
@@ -58,5 +79,34 @@ public final class FindMeetingQuery {
       }
       i += 1;
     }
+    return remainingTime;
+  }
+
+  private ArrayList<TimeRange> getTimeIntersection(
+      ArrayList<TimeRange> options1, ArrayList<TimeRange> options2, long requiredDuration) {
+    int i = 0;
+    int j = 0;
+    int m = options1.size();
+    int n = options2.size();
+    Collections.sort(options1, TimeRange.ORDER_BY_START);
+    Collections.sort(options2, TimeRange.ORDER_BY_START);
+    ArrayList<TimeRange> resultTime = new ArrayList<>();
+    while ((i < m) && (j < n)) {
+      TimeRange slot1 =  options1.get(i);
+      TimeRange slot2 =  options2.get(j);
+      if (slot1.overlaps(slot2)) {
+        int start =  Math.max(slot1.start(),slot2.start());
+        int end = Math.min(slot1.end(),slot2.end());
+        if (TimeRange.fromStartEnd(start,end,false).duration() >= requiredDuration) {
+          resultTime.add(TimeRange.fromStartEnd(start,end,false));
+        }
+      }
+      if (slot1.end() <= slot2.end()) {
+        i += 1;
+      } else {
+        j += 1;
+      }
+    }
+    return resultTime;
   }
 }
