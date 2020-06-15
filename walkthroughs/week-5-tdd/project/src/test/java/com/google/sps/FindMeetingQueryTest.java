@@ -288,8 +288,8 @@ public final class FindMeetingQueryTest {
 
   @Test
   public void justEnoughRoomWithOptional() {
-    // Have one person, but make it so that there is just enough room at one point in the day to
-    // have the meeting.
+    // Have one required person and one optional person, but make it so that there
+    // is just enough room at one point in the day to have the meeting.
     //
     // Events  : |--A--||-C-||----A----|
     // Day     : |---------------------|
@@ -364,7 +364,6 @@ public final class FindMeetingQueryTest {
   @Test
   public void noMandatoryWithGaps() {
     // Have two optional attendees and no reuqired attendee, with serveral gaps in optional schedules
-    //
     // Events  :       |-A-| |-B-|
     // Day     : |---------------------|
     // Options : |--1-|  |--2-|  |--3--|
@@ -392,7 +391,6 @@ public final class FindMeetingQueryTest {
   @Test
   public void noMandatoryWithoutGaps() {
     // Have two optional attendees and no reuqired attendee, with serveral gaps in optional schedules
-    //
     // Events  : |------A--| |-B-------|
     // Day     : |---------------------|
     // Options :
@@ -409,7 +407,6 @@ public final class FindMeetingQueryTest {
 
     Collection<TimeRange> actual = query.query(events, request);
     Collection<TimeRange> expected = Arrays.asList();
-
 
     Assert.assertEquals(expected, actual);
   }

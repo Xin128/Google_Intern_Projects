@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-
 public final class FindMeetingQuery {
   /**
    * create a query to select available time slots based on request.
@@ -30,9 +29,13 @@ public final class FindMeetingQuery {
     Collection<String> requiredAttendees = request.getAttendees();
     Collection<String> optionalAttendees = request.getOptionalAttendees();
     long requiredDuration = request.getDuration();
+
+    // Check edge cases when the required duration is too long
     if (requiredDuration > TimeRange.WHOLE_DAY.duration()) {
       return new ArrayList<>();
     }
+
+    // Find the available time slots for required attendees and optional attendees
     ArrayList<TimeRange> requiredTime = new ArrayList<>(
         Collections.singletonList(
             TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TimeRange.END_OF_DAY, true)
@@ -52,13 +55,25 @@ public final class FindMeetingQuery {
         optionalTime = splitToTwoRange(eventTime, requiredDuration, optionalTime);
       }
     }
+
+    // Combine the required and optional time slots to find the intersection
     ArrayList<TimeRange> result = getTimeIntersection(requiredTime, optionalTime, requiredDuration);
     return (result.isEmpty() && !requiredAttendees.isEmpty()) ? requiredTime : result;
   }
 
+  /**
+   * * Split an existing time slot list into two parts to avoid occupied time period.
+   * @param occupied unaccessible time slots
+   * @param duration minimum duration of each time slot
+   * @param remainingTime existing list of available slots
+   * @return an list of modified available time slots without overlapping with occupied period
+   */
   private ArrayList<TimeRange> splitToTwoRange(
       TimeRange occupied, long duration, ArrayList<TimeRange> remainingTime) {
+    // Sort the existing time slot list
     Collections.sort(remainingTime, TimeRange.ORDER_BY_START);
+
+    // Find the overlapping time slots and split them based on required duration
     int i = 0;
     while (i < remainingTime.size()) {
       if (remainingTime.get(i).overlaps(occupied)) {
@@ -82,6 +97,13 @@ public final class FindMeetingQuery {
     return remainingTime;
   }
 
+  /**
+   * Get the intersection of two list of time slots.
+   * @param options1 first available slot list
+   * @param options2 second available slot list
+   * @param requiredDuration required duration for minimum time period
+   * @return intersection of option1 and options2
+   */
   private ArrayList<TimeRange> getTimeIntersection(
       ArrayList<TimeRange> options1, ArrayList<TimeRange> options2, long requiredDuration) {
     int i = 0;
