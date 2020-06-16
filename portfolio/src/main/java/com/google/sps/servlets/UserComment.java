@@ -18,25 +18,16 @@ import java.util.ArrayList;
 import org.javatuples.Pair;
 
 public class UserComment {
-  private ArrayList<Pair<String, String>> commentList = new ArrayList<>();
+  private Pair<String, String> commentEntity;
   private String userName;
 
   public UserComment(String userName, String commentMsg, String imagUrl) {
-    System.out.println("userComment get called?");
     this.setuserName(userName);
-    this.addCommentEntity(commentMsg,imagUrl);
-  }
-  public String getuserName() {
-    return userName;
+    this.setCommentEntity(commentMsg,imagUrl);
   }
 
-  public ArrayList<Pair<String, String>> getCommentList() {
-    return commentList;
-  }
-
-  public void addCommentEntity(String commentMsg, String imageUrl) {
-    Pair<String, String> commentEntity = new Pair<>(commentMsg,imageUrl);
-    this.commentList.add(commentEntity);
+  public void setCommentEntity(String commentMsg, String imageUrl) {
+    commentEntity = new Pair<>(commentMsg,imageUrl);
   }
 
   public void setuserName(String userName) {

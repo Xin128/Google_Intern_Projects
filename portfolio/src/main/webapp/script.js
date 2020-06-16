@@ -50,11 +50,11 @@ function getCommentInForm() {
     Object.entries(commentMap).forEach(([commentUser,commentEntity]) => {
       var userEmail = document.createTextNode(commentUser.concat(': '));
       commentContainer.append(userEmail);
-      commentEntity.commentList.forEach(commentContent => {
-        var comemntMsg = document.createTextNode(commentContent.valueList[0]);
+      commentEntity.forEach(commentContent => {
+        var comemntMsg = document.createTextNode(commentContent.commentEntity.valueList[0]);
         commentContainer.append(comemntMsg);
         commentContainer.append(linebreak);
-        fetch(commentContent.valueList[1]).then(blobResponse => blobResponse.blob()).then((bloburl) => {
+        fetch(commentContent.commentEntity.valueList[1]).then(blobResponse => blobResponse.blob()).then((bloburl) => {
           var objectURL = URL.createObjectURL(bloburl);
           var imgElem = document.createElement('img');
           imgElem.src = objectURL;

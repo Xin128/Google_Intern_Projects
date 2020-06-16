@@ -23,6 +23,8 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -66,7 +68,7 @@ public class DataServlet extends HttpServlet {
      * Note: commentMap data structure:
      * {UserName1: UserComment1, UserName2: UserComment2, UserName3: UserComment3...}
      *      */
-    HashMap<String, UserComment> userList = new HashMap();
+    HashMap<String, ArrayList<UserComment>> userList = new HashMap();
     for (Entity commentEntity : results.asList(FetchOptions.Builder.withLimit(maxNumComments))) {
       // Get the different properties (userEmail, message, image) of a comment Entity
       String commentMsg = (String) commentEntity.getProperty(CONTENT_PROPERTY);
@@ -75,12 +77,12 @@ public class DataServlet extends HttpServlet {
         commentUser = DEFAULT_USERNAME;
       }
       String imageUrl = (String) commentEntity.getProperty(BLOB_URL_PROPERTY);
-      UserComment msglist = userList.get(commentUser);
+      ArrayList<UserComment> msglist = userList.get(commentUser);
+      UserComment newComment = new UserComment(commentUser, commentMsg, imageUrl);
       if (msglist == null) {
-        UserComment firstCommnet = new UserComment(commentUser, commentMsg, imageUrl);
-        userList.put(commentUser, firstCommnet);
+        userList.put(commentUser, new ArrayList<>(Arrays.asList(newComment)));
       } else {
-        msglist.addCommentEntity(commentMsg,imageUrl);
+        msglist.add(newComment);
       }
     }
     response.setContentType("application/json;");
