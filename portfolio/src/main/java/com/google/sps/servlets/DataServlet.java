@@ -42,10 +42,7 @@ public class DataServlet extends HttpServlet {
   protected static final String COMMENT = "Comment";
   protected static final String CONTENT_PROPERTY = "content";
   protected static final String TIMESTAMP_PROPERTY = "timestamp";
-  private final String BLOB_URL = "blob_upload_url";
-  private final int DEFAULT_MAX_COMMENT_NUM = 1;
   private final String DEFAULT_USERNAME = "defaultUser";
-  private final String INPUT_MSG_FORM = "comment-input";
   private final String NUM_COMMENT_FORM = "numComment";
   private final String USEREMAIL_PROPERTY = "userEmail";
 
