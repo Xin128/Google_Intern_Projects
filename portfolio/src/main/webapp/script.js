@@ -46,11 +46,7 @@ function getCommentInForm() {
    * {UserName1: UserComment1, UserName2: UserComment2, UserName3: UserComment3...}
    */
   var commentContainer = document.getElementById('comment-container');
-  console.log(url);
-  fetch(url).then(response => {
-    return response.clone().json();
-  }).then((commentMap) => {
-    console.log(commentMap);
+  fetch(url).then(response => response.json()).then((commentMap) => {
     Object.entries(commentMap).forEach(([commentUser,commentEntity]) => {
       var userEmail = document.createTextNode(commentUser.concat(': '));
       commentContainer.append(userEmail);
