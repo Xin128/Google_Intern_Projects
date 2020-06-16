@@ -63,7 +63,8 @@ public class DataServlet extends HttpServlet {
 
     /* Add limited number of comment contents and user email to the userComment Map
      * Note: commentMap data structure:
-     * {UserName1: UserComment1, UserName2: UserComment2, UserName3: UserComment3...}
+     * {UserName1: [User1Comment1, User1Comment2...],
+     * UserName2: [User2Comment1, User2Comment2...],...}
      *      */
     HashMap<String, ArrayList<UserComment>> userList = new HashMap();
     for (Entity commentEntity : results.asList(FetchOptions.Builder.withLimit(maxNumComments))) {

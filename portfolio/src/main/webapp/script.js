@@ -43,7 +43,8 @@ function getCommentInForm() {
 
   /* fetch from data url, then fetch from remote blobstore url with image and display it on the webpage
    * Note: commentMap data structure:
-   * {UserName1: UserComment1, UserName2: UserComment2, UserName3: UserComment3...}
+   * {UserName1: [User1Comment1, User1Comment2...],
+   * UserName2: [User2Comment1, User2Comment2...],...}
    */
   var commentContainer = document.getElementById('comment-container');
   fetch(url).then(response => response.json()).then((commentMap) => {
