@@ -42,10 +42,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet("/my-form-handler")
 public class FormHandlerServlet extends HttpServlet {
-  private String BLOB_URL_PROPERTY = DataServlet.BLOB_URL_PROPERTY;
-  private String COMMENT = DataServlet.COMMENT;
-  private String CONTENT_PROPERTY = DataServlet.CONTENT_PROPERTY;
-  private String TIMESTAMP_PROPERTY = DataServlet.TIMESTAMP_PROPERTY;
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the message entered by the user.
@@ -56,10 +52,10 @@ public class FormHandlerServlet extends HttpServlet {
   
     // Create an entity with received comment message
     long timestamp = System.currentTimeMillis();
-    Entity commentEntity = new Entity(COMMENT);
-    commentEntity.setProperty(CONTENT_PROPERTY, message);
-    commentEntity.setProperty(TIMESTAMP_PROPERTY,timestamp);
-    commentEntity.setProperty(BLOB_URL_PROPERTY, imageUrl);
+    Entity commentEntity = new Entity(DataServlet.COMMENT);
+    commentEntity.setProperty(DataServlet.CONTENT_PROPERTY, message);
+    commentEntity.setProperty(DataServlet.TIMESTAMP_PROPERTY,timestamp);
+    commentEntity.setProperty(DataServlet.BLOB_URL_PROPERTY, imageUrl);
 
     // Used Datastore survice to store newly created comment entity
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
