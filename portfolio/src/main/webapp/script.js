@@ -42,18 +42,23 @@ function getCommentInForm() {
   var url = "/data?numComment=" + numComments;
 
   /* fetch from data url, then fetch from remote blobstore url with image and display it on the webpage
-   * Note: commeentMap data structure: {userEmail: [[userComment1, userCommentImage1],[userComment2, userCommentImage2] ]}
+   * Note: commentMap data structure:
+   * {UserName1: UserComment1, UserName2: UserComment2, UserName3: UserComment3...}
    */
   var commentContainer = document.getElementById('comment-container');
-  fetch(url).then(response => response.json()).then((commentMap) => { 
+  console.log(url);
+  fetch(url).then(response => {
+    return response.clone().json();
+  }).then((commentMap) => {
+    console.log(commentMap);
     Object.entries(commentMap).forEach(([commentUser,commentEntity]) => {
       var userEmail = document.createTextNode(commentUser.concat(': '));
       commentContainer.append(userEmail);
-      commentEntity.forEach(commentContent => {
-        var comemntMsg = document.createTextNode(commentContent[0]);
+      commentEntity.commentList.forEach(commentContent => {
+        var comemntMsg = document.createTextNode(commentContent.valueList[0]);
         commentContainer.append(comemntMsg);
         commentContainer.append(linebreak);
-        fetch(commentContent[1]).then(blobResponse => blobResponse.blob()).then((bloburl) => {
+        fetch(commentContent.valueList[1]).then(blobResponse => blobResponse.blob()).then((bloburl) => {
           var objectURL = URL.createObjectURL(bloburl);
           var imgElem = document.createElement('img');
           imgElem.src = objectURL;
@@ -74,8 +79,7 @@ function deleteAllComments() {
 // fetch the url of image blobstore and show the form to upload files
 function fetchBlobstoreUrlAndShowForm() {
   const messageForm = document.getElementById('my-form');
-  var url = "/data?blob_upload_url=" + messageForm;
-  fetch(url).then((response) => response.text())
+  fetch("/blob").then((response) => response.text())
       .then((imageUploadUrl) => {
         messageForm.action = imageUploadUrl;
         messageForm.classList.remove('hidden');
