@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
   */
 @WebServlet("/userLogIn")
 public class UserLoginServelet extends HttpServlet {
-  final private String redirectStr = "/";
+  final private String REDIRECTSTR = "/";
   private HashMap<String, Object> userInfo = new HashMap<String, Object>();
 
   @Override
@@ -39,12 +39,12 @@ public class UserLoginServelet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
       String userEmail = userService.getCurrentUser().getEmail();
-      String logoutUrl = userService.createLogoutURL(redirectStr);
+      String logoutUrl = userService.createLogoutURL(REDIRECTSTR);
       userInfo.put("status", 1);
       userInfo.put("email", userEmail);
       userInfo.put("logoutUrl", logoutUrl);
     } else {
-      String loginUrl = userService.createLoginURL(redirectStr);
+      String loginUrl = userService.createLoginURL(REDIRECTSTR);
       userInfo.put("status", 0);
       userInfo.put("loginUrl",loginUrl);
     }
