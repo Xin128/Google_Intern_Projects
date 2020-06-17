@@ -17,9 +17,22 @@ package com.google.sps.servlets;
 import org.javatuples.Pair;
 
 public class UserComment {
-  // wrapped comment entity that contains the comment message and image url
-  private Pair<String, String> commentEntity;
+  // Wrapped comment entity that contains the comment message and image url
+  private String commentMsg;
+  private String imageUrl;
   private String userName;
+
+  public String getCommentMsg() {
+    return commentMsg;
+  }
+
+  public String getUserName() {
+    return userName;
+  }
+
+  public String getImageUrl() {
+    return imageUrl;
+  }
 
   public UserComment(String userName, String commentMsg, String imagUrl) {
     this.setuserName(userName);
@@ -27,7 +40,8 @@ public class UserComment {
   }
 
   public void setCommentEntity(String commentMsg, String imageUrl) {
-    commentEntity = new Pair<>(commentMsg,imageUrl);
+    this.commentMsg = commentMsg;
+    this.imageUrl = imageUrl;
   }
 
   public void setuserName(String userName) {

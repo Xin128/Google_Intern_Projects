@@ -61,8 +61,8 @@ public class DataServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    /* Add limited number of comment contents and user email to the userComment Map
-     * Note: commentMap data structure:
+    /* Add limited number of comment entity  and user email to the userList Map
+     * Note: userList data structure:
      * {UserName1: [User1Comment1, User1Comment2...],
      * UserName2: [User2Comment1, User2Comment2...],...}
      *      */
@@ -83,6 +83,7 @@ public class DataServlet extends HttpServlet {
         msglist.add(newComment);
       }
     }
+    System.out.println(new Gson().toJson(userList));
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(userList));
   }
