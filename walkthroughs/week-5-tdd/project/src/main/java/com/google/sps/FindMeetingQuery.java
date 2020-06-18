@@ -37,20 +37,18 @@ public final class FindMeetingQuery {
 
     // Find the available time slots for required attendees and optional attendees
     ArrayList<TimeRange> requiredTime = new ArrayList<>(
-        Collections.singletonList(TimeRange.WHOLE_DAY
-        ));
+        Collections.singletonList(TimeRange.WHOLE_DAY));
     ArrayList<TimeRange> allConsideredTime = new ArrayList<>(
-        Collections.singletonList(TimeRange.WHOLE_DAY
-        ));
+        Collections.singletonList(TimeRange.WHOLE_DAY));
 
     for (Event event : events) {
       TimeRange eventTime = event.getWhen();
       if (!Collections.disjoint(event.getAttendees(), requiredAttendees)) {
         reduceAvailability(eventTime, requiredDuration, requiredTime);
-        reduceAvailability(eventTime,requiredDuration,allConsideredTime);
+        reduceAvailability(eventTime, requiredDuration,allConsideredTime);
       }
       if (!Collections.disjoint(event.getAttendees(), optionalAttendees)) {
-        reduceAvailability(eventTime,requiredDuration,allConsideredTime);
+        reduceAvailability(eventTime, requiredDuration,allConsideredTime);
       }
     }
     return (allConsideredTime.isEmpty() && !requiredAttendees.isEmpty())
