@@ -37,28 +37,25 @@ public final class FindMeetingQuery {
 
     // Find the available time slots for required attendees and optional attendees
     ArrayList<TimeRange> requiredTime = new ArrayList<>(
-        Collections.singletonList(
-            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TimeRange.END_OF_DAY, true)
-        )
-    );
-    ArrayList<TimeRange> optionalTime = new ArrayList<>(
-        Collections.singletonList(
-            TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TimeRange.END_OF_DAY, true)
-        )
-    );
+        Collections.singletonList(TimeRange.WHOLE_DAY
+        ));
+    ArrayList<TimeRange> allConsideredTime = new ArrayList<>(
+        Collections.singletonList(TimeRange.WHOLE_DAY
+        ));
+
     for (Event event : events) {
       TimeRange eventTime = event.getWhen();
       if (!Collections.disjoint(event.getAttendees(), requiredAttendees)) {
-        requiredTime = splitToTwoRange(eventTime, requiredDuration, requiredTime);
+        splitToTwoRange(eventTime, requiredDuration, requiredTime);
+        splitToTwoRange(eventTime,requiredDuration,allConsideredTime);
       }
       if (!Collections.disjoint(event.getAttendees(), optionalAttendees)) {
-        optionalTime = splitToTwoRange(eventTime, requiredDuration, optionalTime);
+        splitToTwoRange(eventTime,requiredDuration,allConsideredTime);
       }
     }
+    return (allConsideredTime.isEmpty() && !requiredAttendees.isEmpty())
+               ? requiredTime : allConsideredTime;
 
-    // Combine the required and optional time slots to find the intersection
-    ArrayList<TimeRange> result = getTimeIntersection(requiredTime, optionalTime, requiredDuration);
-    return (result.isEmpty() && !requiredAttendees.isEmpty()) ? requiredTime : result;
   }
 
   /**
@@ -68,67 +65,29 @@ public final class FindMeetingQuery {
    * @param remainingTime existing list of available slots
    * @return an list of modified available time slots without overlapping with occupied period
    */
-  private ArrayList<TimeRange> splitToTwoRange(
+  private void splitToTwoRange(
       TimeRange occupied, long duration, ArrayList<TimeRange> remainingTime) {
-    // Sort the existing time slot list
-    Collections.sort(remainingTime, TimeRange.ORDER_BY_START);
 
     // Find the overlapping time slots and split them based on required duration
-    int i = 0;
-    while (i < remainingTime.size()) {
-      if (remainingTime.get(i).overlaps(occupied)) {
+    int index = 0;
+    while (index < remainingTime.size()) {
+      if (remainingTime.get(index).overlaps(occupied)) {
         TimeRange prev = TimeRange.fromStartEnd(
-            remainingTime.get(i).start(), occupied.start(), false);
+            remainingTime.get(index).start(), occupied.start(), false);
         TimeRange after = TimeRange.fromStartEnd(
-            occupied.end(), remainingTime.get(i).end(), false);
-        remainingTime.remove(i);
-        i -= 1;
+            occupied.end(), remainingTime.get(index).end(), false);
+        remainingTime.remove(index);
+        index -= 1;
         if (prev.duration() >= duration) {
-          i += 1;
-          remainingTime.add(i, prev);
+          index += 1;
+          remainingTime.add(index, prev);
         }
         if (after.duration() >= duration) {
-          i += 1;
-          remainingTime.add(i, after);
+          index += 1;
+          remainingTime.add(index, after);
         }
       }
-      i += 1;
+      index += 1;
     }
-    return remainingTime;
-  }
-
-  /**
-   * Get the intersection of two list of time slots.
-   * @param options1 first available slot list
-   * @param options2 second available slot list
-   * @param requiredDuration required duration for minimum time period
-   * @return intersection of option1 and options2
-   */
-  private ArrayList<TimeRange> getTimeIntersection(
-      ArrayList<TimeRange> options1, ArrayList<TimeRange> options2, long requiredDuration) {
-    int i = 0;
-    int j = 0;
-    int m = options1.size();
-    int n = options2.size();
-    Collections.sort(options1, TimeRange.ORDER_BY_START);
-    Collections.sort(options2, TimeRange.ORDER_BY_START);
-    ArrayList<TimeRange> resultTime = new ArrayList<>();
-    while ((i < m) && (j < n)) {
-      TimeRange slot1 =  options1.get(i);
-      TimeRange slot2 =  options2.get(j);
-      if (slot1.overlaps(slot2)) {
-        int start =  Math.max(slot1.start(),slot2.start());
-        int end = Math.min(slot1.end(),slot2.end());
-        if (TimeRange.fromStartEnd(start,end,false).duration() >= requiredDuration) {
-          resultTime.add(TimeRange.fromStartEnd(start,end,false));
-        }
-      }
-      if (slot1.end() <= slot2.end()) {
-        i += 1;
-      } else {
-        j += 1;
-      }
-    }
-    return resultTime;
   }
 }
