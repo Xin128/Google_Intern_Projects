@@ -55,7 +55,6 @@ public final class FindMeetingQuery {
     }
     return (allConsideredTime.isEmpty() && !requiredAttendees.isEmpty())
                ? requiredTime : allConsideredTime;
-
   }
 
   /**
