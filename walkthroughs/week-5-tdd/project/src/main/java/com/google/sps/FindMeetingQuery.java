@@ -46,11 +46,11 @@ public final class FindMeetingQuery {
     for (Event event : events) {
       TimeRange eventTime = event.getWhen();
       if (!Collections.disjoint(event.getAttendees(), requiredAttendees)) {
-        splitToTwoRange(eventTime, requiredDuration, requiredTime);
-        splitToTwoRange(eventTime,requiredDuration,allConsideredTime);
+        reduceAvailability(eventTime, requiredDuration, requiredTime);
+        reduceAvailability(eventTime,requiredDuration,allConsideredTime);
       }
       if (!Collections.disjoint(event.getAttendees(), optionalAttendees)) {
-        splitToTwoRange(eventTime,requiredDuration,allConsideredTime);
+        reduceAvailability(eventTime,requiredDuration,allConsideredTime);
       }
     }
     return (allConsideredTime.isEmpty() && !requiredAttendees.isEmpty())
@@ -65,7 +65,7 @@ public final class FindMeetingQuery {
    * @param remainingTime existing list of available slots
    * @return an list of modified available time slots without overlapping with occupied period
    */
-  private void splitToTwoRange(
+  private void reduceAvailability(
       TimeRange occupied, long duration, ArrayList<TimeRange> remainingTime) {
 
     // Find the overlapping time slots and split them based on required duration
