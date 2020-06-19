@@ -14,8 +14,6 @@
 
 package com.google.sps.servlets;
 
-import org.javatuples.Pair;
-
 public class UserComment {
   // Wrapped comment entity that contains the comment message and image url
   private String commentMsg;

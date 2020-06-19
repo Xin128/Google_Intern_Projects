@@ -63,7 +63,7 @@ public class DataServlet extends HttpServlet {
 
     /* Add limited number of comment entity  and user email to the userList Map
      * Note: userList data structure:
-     * {UserName1: [User1Comment1, User1Comment2...],
+     * { UserName1: [User1Comment1, User1Comment2...],
      * UserName2: [User2Comment1, User2Comment2...],...}
      *      */
     HashMap<String, ArrayList<UserComment>> userList = new HashMap();
@@ -83,7 +83,6 @@ public class DataServlet extends HttpServlet {
         msglist.add(newComment);
       }
     }
-    System.out.println(new Gson().toJson(userList));
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(userList));
   }
