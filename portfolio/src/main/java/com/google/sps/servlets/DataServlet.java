@@ -14,6 +14,16 @@
 
 package com.google.sps.servlets;
 
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+
+import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.CommentListResponse;
+import com.google.api.services.youtube.model.CommentThreadListResponse;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -29,9 +39,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
   * Servlet that returns comments in database. 
@@ -47,9 +59,46 @@ public class DataServlet extends HttpServlet {
   private final String TIMESTAMP_PROPERTY = "timestamp";
   private final String USEREMAIL_PROPERTY = "userEmail";
 
+  private static final String DEVELOPER_KEY = "AIzaSyB-cSXb_pMMJU4Xs5PlM9UfYs6nPuZvOZs";
+  private static final String APPLICATION_NAME = "API code samples";
+  private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+
+
+    /**
+        * Build and return an authorized API client service.
+        *
+        * @return an authorized API client service
+        * @throws GeneralSecurityException, IOException
+        */
+    public static YouTube getService() throws GeneralSecurityException, IOException {
+        final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
+            .setApplicationName(APPLICATION_NAME)
+            .build();
+    }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    try {
+        YouTube youtubeService = getService();            
+        System.out.println(youtubeService);
+        YouTube.CommentThreads.List youtuberequest = youtubeService.commentThreads()
+            .list("snippet");        
+        System.out.println(youtuberequest);
+        CommentThreadListResponse youtuberesponse = youtuberequest.setKey(DEVELOPER_KEY)
+            .setVideoId("31dYohFK0Tc")
+            .setMaxResults(100L)
+            .setOrder("time")
+            .setTextFormat("plainText")
+            .execute();
+            System.out.println(youtuberesponse);
+    } catch (GeneralSecurityException | IOException e) {
+        System.out.println(e.getMessage());
+        System.out.println("getting failure");
+        return;
+    }
+
+
     // Get the limiting number of comments
     String requestedNumComment = request.getParameter(NUM_COMMENT_FORM);
     if (requestedNumComment == null) {
