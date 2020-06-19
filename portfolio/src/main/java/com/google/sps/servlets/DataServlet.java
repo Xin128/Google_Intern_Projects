@@ -59,7 +59,7 @@ public class DataServlet extends HttpServlet {
   private final String TIMESTAMP_PROPERTY = "timestamp";
   private final String USEREMAIL_PROPERTY = "userEmail";
 
-  private static final String DEVELOPER_KEY = "AIzaSyB-cSXb_pMMJU4Xs5PlM9UfYs6nPuZvOZs";
+  private static final String DEVELOPER_KEY = "";
   private static final String APPLICATION_NAME = "API code samples";
   private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
