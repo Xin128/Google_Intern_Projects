@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /**
   * Servlet that returns comments in database. 
   * Note: We first added the Gson library dependency to pom.xml.
