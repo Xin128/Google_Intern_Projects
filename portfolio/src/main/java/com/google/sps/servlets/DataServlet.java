@@ -21,17 +21,15 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 
 /**
   * Servlet that returns comments in database. 
@@ -39,12 +37,12 @@ import java.util.HashMap;
   */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+  protected static final String BLOB_URL_PROPERTY = "blob_url";
   protected static final String COMMENT = "Comment";
-  private final String CONTENT_PROPERTY = "content";
-  private final int DEFAULT_MAX_COMMENT_NUM = 1;
-  private final String INPUT_MSG_FORM = "comment-input";
+  protected static final String CONTENT_PROPERTY = "content";
+  protected static final String TIMESTAMP_PROPERTY = "timestamp";
+  private final String DEFAULT_USERNAME = "defaultUser";
   private final String NUM_COMMENT_FORM = "numComment";
-  private final String TIMESTAMP_PROPERTY = "timestamp";
   private final String USEREMAIL_PROPERTY = "userEmail";
 
 
@@ -53,55 +51,39 @@ public class DataServlet extends HttpServlet {
     // Get the limiting number of comments
     String requestedNumComment = request.getParameter(NUM_COMMENT_FORM);
     if (requestedNumComment == null) {
-        return; 
+      return;
     }
     int maxNumComments = Integer.parseInt(requestedNumComment);
-    
+
     // Create the query and prepared query to load comment entities from database
     Query query = new Query(COMMENT).addSort(TIMESTAMP_PROPERTY, SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    // Add limited number of comment contents and user email to the userComment Map  
-    HashMap<String, ArrayList<String>> userComment = new HashMap<String, ArrayList<String>>();
+    /* Add limited number of comment entity  and user email to the userList Map
+     * Note: userList data structure:
+     * { UserName1: [User1Comment1, User1Comment2...],
+     * UserName2: [User2Comment1, User2Comment2...],...}
+     *      */
+    HashMap<String, ArrayList<UserComment>> userList = new HashMap();
     for (Entity commentEntity : results.asList(FetchOptions.Builder.withLimit(maxNumComments))) {
-        String commentMsg = (String) commentEntity.getProperty(CONTENT_PROPERTY);
-        String commentUser = (String) commentEntity.getProperty(USEREMAIL_PROPERTY);
-        ArrayList<String> msglist = userComment.get(commentUser);
-        if (msglist == null) {
-            userComment.put(commentUser, new ArrayList<String>(Arrays.asList(commentMsg)));
-        } else {
-            msglist.add(commentMsg);
-        }
+      // Get the different properties (userEmail, message, image) of a comment Entity
+      String commentMsg = (String) commentEntity.getProperty(CONTENT_PROPERTY);
+      String commentUser = (String) commentEntity.getProperty(USEREMAIL_PROPERTY);
+      if (commentUser == null) {
+        commentUser = DEFAULT_USERNAME;
+      }
+      String imageUrl = (String) commentEntity.getProperty(BLOB_URL_PROPERTY);
+      ArrayList<UserComment> msglist = userList.get(commentUser);
+      UserComment newComment = new UserComment(commentUser, commentMsg, imageUrl);
+      if (msglist == null) {
+        userList.put(commentUser, new ArrayList<>(Arrays.asList(newComment)));
+      } else {
+        msglist.add(newComment);
+      }
     }
     response.setContentType("application/json;");
-    response.getWriter().println(new Gson().toJson(userComment));
-  }
-
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Get the input from the form.
-    String inputMsg = request.getParameter(INPUT_MSG_FORM);
-    if (inputMsg == null) {
-        return; 
-    }
-    
-    if (!inputMsg.isEmpty()) {
-      // Create an entity with received comment message
-      long timestamp = System.currentTimeMillis();
-      Entity commentEntity = new Entity(COMMENT);
-      UserService userService = UserServiceFactory.getUserService();      
-      String userEmail = userService.getCurrentUser().getEmail();
-      commentEntity.setProperty(CONTENT_PROPERTY, inputMsg);
-      commentEntity.setProperty(TIMESTAMP_PROPERTY,timestamp);
-      commentEntity.setProperty(USEREMAIL_PROPERTY, userEmail);
-
-    // Used Datastore survice to store newly created comment entity
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(commentEntity);
-    }
-    // Redirect back to the current page
-    response.sendRedirect("/index.html");
+    response.getWriter().println(new Gson().toJson(userList));
   }
 
 }

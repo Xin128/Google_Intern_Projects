@@ -14,20 +14,15 @@
 
 package com.google.sps.servlets;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.HashMap;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 
 /**
   * Servlet that ensure User's log in status.
@@ -35,8 +30,8 @@ import java.util.HashMap;
   */
 @WebServlet("/userLogIn")
 public class UserLoginServelet extends HttpServlet {
-  HashMap<String, Object> userInfo = new HashMap<String, Object>();
-  final private String redirectStr = "/";
+  final private String REDIRECT_STR = "/";
+  private HashMap<String, Object> userInfo = new HashMap<String, Object>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -44,12 +39,12 @@ public class UserLoginServelet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
       String userEmail = userService.getCurrentUser().getEmail();
-      String logoutUrl = userService.createLogoutURL(redirectStr);
+      String logoutUrl = userService.createLogoutURL(REDIRECT_STR);
       userInfo.put("status", 1);
       userInfo.put("email", userEmail);
       userInfo.put("logoutUrl", logoutUrl);
     } else {
-      String loginUrl = userService.createLoginURL(redirectStr);
+      String loginUrl = userService.createLoginURL(REDIRECT_STR);
       userInfo.put("status", 0);
       userInfo.put("loginUrl",loginUrl);
     }

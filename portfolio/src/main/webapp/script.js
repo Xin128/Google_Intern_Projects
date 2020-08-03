@@ -16,6 +16,7 @@ const DEFAULT_MAX_COMMENT_NUM = 1;
 const DISPLAY = "block";
 const HIDE = "none";
 const LOGGED_IN = 1;
+const linebreak = document.createElement('br');
 
 google.charts.load("current", {"packages": ["geochart"]});
 google.charts.setOnLoadCallback(drawChart);
@@ -35,17 +36,53 @@ function addRandomDescription() {
 }
 
 function getCommentInForm() {
+  // get number of limited comments from input form
   inputVal = document.getElementById("quantity").value;
   var numComments = (inputVal != '') ? inputVal : DEFAULT_MAX_COMMENT_NUM;
   var url = "/data?numComment=" + numComments;
-  fetch(url).then(response => response.text()).then((quote) => {
-    document.getElementById('comment-container').innerText = quote;
-  });
-}
 
+  /* fetch from data url, then fetch from remote blobstore url with image and display it on the webpage
+   * Note: commentMap data structure:
+   * {UserName1: [User1Comment1, User1Comment2...],
+   * UserName2: [User2Comment1, User2Comment2...],...}
+   */
+  var commentContainer = document.getElementById('comment-container');
+  fetch(url).then(response => response.json()).then((commentMap) => {
+    Object.entries(commentMap).forEach(([commentUser,commentEntity]) => {
+      console.log(commentEntity);
+      var userEmail = document.createTextNode(commentUser.concat(': '));
+      commentContainer.append(userEmail);
+      commentEntity.forEach(commentContent => {
+        console.log(commentContent);
+        var commentMsg = document.createTextNode(commentContent.commentMsg);
+        commentContainer.append(commentMsg);
+        commentContainer.append(linebreak);
+        fetch(commentContent.imageUrl).then(blobResponse => blobResponse.blob()).then((bloburl) => {
+          var objectURL = URL.createObjectURL(bloburl);
+          var imgElem = document.createElement('img');
+          imgElem.src = objectURL;
+          commentContainer.append(imgElem);
+          commentContainer.append(linebreak);
+        });
+      });
+    })
+  }); 
+};
+
+// delete all the comments from Datastore
 function deleteAllComments() {
   const params = new URLSearchParams();
   fetch("/delete-data", { method: "POST", body: params });
+}
+
+// fetch the url of image blobstore and show the form to upload files
+function fetchBlobstoreUrlAndShowForm() {
+  const messageForm = document.getElementById('my-form');
+  fetch("/blob").then((response) => response.text())
+      .then((imageUploadUrl) => {
+        messageForm.action = imageUploadUrl;
+        messageForm.classList.remove('hidden');
+      });
 }
 
 /**
